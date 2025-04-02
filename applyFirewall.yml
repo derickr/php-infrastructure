@@ -1,0 +1,65 @@
+# Setup firewall on all services
+#
+# This playbook can be used to refresh all the firewall rules on all the (non-jumphost)
+# servers. It will only allow HTTPS traffic from Myra to port 443, and SSH traffic from
+# the jump hosts.
+
+- hosts:
+  - service
+  
+  become: yes
+  become_user: root
+
+  tasks:
+  - name: Install ufw
+    apt:
+      name:
+      - ufw
+      state: present
+      update_cache: yes
+
+  - name: Reset UFW
+    ufw:
+      state: reset
+  
+  # Gather jump host names so we can enable port 22 from them
+  - name: Gather facts for all jumphosts
+    setup:
+      gather_subset:
+        - default_ipv4
+    delegate_to: "{{ item }}"
+    delegate_facts: true
+    loop: "{{ groups['jumphost'] }}"
+
+  # Add UFW firewall configuration so that the services are only accessible through the public ip of the jumphosts
+  - name: Allow ssh only from jumphosts
+    ufw:
+      rule: allow
+      from_ip: "{{ hostvars[item].ansible_default_ipv4.address }}"
+      port: 22
+    loop: "{{ groups['jumphost'] }}"
+
+  - name: Block port 80 access
+    ufw:
+      rule: deny
+      proto: tcp
+      port: 80
+
+  - name: Allow access to port 443 only from Myra hosts
+    ufw:
+      rule: allow
+      port: 443
+      proto: tcp
+      src: "{{ item }}"
+    loop: "{{ myra_hosts }}"
+
+  - name: Block port 443 access for elsewhere
+    ufw:
+      rule: deny
+      port: 443
+      proto: tcp
+
+  - name: Enable UFW and deny incoming requests
+    ufw:
+      state: enabled
+      policy: deny
