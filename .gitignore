@@ -1,3 +1,4 @@
 .ansible-facts-cache
 .DS_Store
 local.ansible.cfg
+*.sw?
