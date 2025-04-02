@@ -5,6 +5,3 @@
     mode: "755"
     recurse: yes
 
-#- name: Fetch content for museum
-#  command: "rsync -avz {{ museum_source }}/ {{ museum_docroot }}/{{ museum_domain }}/"
-

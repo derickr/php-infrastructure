@@ -138,7 +138,7 @@
     port: 443
     proto: tcp
 
-# fetch the content from the encrypted museum source
+# make sure there is a directory for the museum data
 - include_tasks: deploy.yml
 
 - name: Run backup tasks
