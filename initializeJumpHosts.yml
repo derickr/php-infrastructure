@@ -1,0 +1,78 @@
+# Run this playbook to initialise your machines: The jumphosts, the rsync machine and all services.
+# It sets up the firewall, disables root login, creates admin users, puts their ssh keys to the machines.
+# It installs GA and the Google Authenticator file to the jumphosts.
+
+# Example run:
+# ansible-playbook initialize.yml --extra-vars "@/path/to/admins.yml"
+# ansible-playbook initialize.yml --extra-vars "@/home/jacoba/dev/stf-php-ansible/etc/admins.yml"
+
+
+# Add admin user and pubkey everywhere
+- hosts:
+  - jumphost
+
+  remote_user: root
+
+  tasks:
+  - name: Create a linux user and add it to sudo group
+    user:
+      name: "{{ item.name }}"
+      create_home: yes
+      state: present
+      groups: sudo
+      append: yes
+      shell: /bin/bash
+    loop: "{{ admins }}"
+
+  # Allow members of group sudo to execute any command without specifying their password
+  - name: Configure sudoers
+    copy:
+      dest: /etc/sudoers.d/20-sudo-password
+      content: "%sudo ALL=(ALL) NOPASSWD: ALL"
+
+  - name: Copy admin's ssh-keys
+    loop: "{{ admins }}"
+    include_role:
+      name: add_ssh_key
+    vars:
+      username: "{{ item.name }}"
+      pubkeys: "{{ item.pubkeys }}"
+
+
+# Install Google Authenticator and copy GA file on jumphosts
+- hosts:
+  - jumphost
+
+  remote_user: root
+
+  tasks:
+  - name: Copy admin's Google Authenticator files
+    loop: "{{ admins }}"
+    include_role:
+      name: add_GA_file
+    vars:
+      username: "{{ item.name }}"
+      path_to_google_auth: "{{ item.GA_file }}"
+
+  roles:
+    - role: install_GA
+
+# Disable root login at the very end
+- hosts:
+  - jumphost
+
+  remote_user: root
+
+  tasks:
+  - name: Disable root login
+    lineinfile:
+      path: /etc/ssh/sshd_config
+      regexp: ^PermitRootLogin
+      line: PermitRootLogin no
+    notify: restart ssh
+
+  handlers:
+  - name: restart ssh
+    service:
+      name: ssh
+      state: restarted
