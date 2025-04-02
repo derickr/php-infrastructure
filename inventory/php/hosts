@@ -1,24 +1,24 @@
 [jumphost]
-jumphost0 ansible_host=jumphost0.ams3.do.php.backend.lol
-jumphost1 ansible_host=jumphost1.nyc1.do.php.backend.lol
+jumphost0 ansible_host=jump-ams-1.internal.php.net
+jumphost1 ansible_host=jump-sfo-1.internal.php.net
 
-[rsync]
-rsync0 ansible_host=rsync0.ams3.do.php.backend.lol
+#[rsync]
+#rsync0 ansible_host=rsync0.ams3.do.php.backend.lol
 
 [service:children]
 wiki
-downloads
+#downloads
 museum
-main
-
-[wiki]
-service0 ansible_host=service0.ams3.do.php.backend.lol
-
-[downloads]
-service1 ansible_host=service1.ams3.do.php.backend.lol
+#main
 
 [museum]
-service2 ansible_host=service2.ams3.do.php.backend.lol
+service0 ansible_host=service0-ams.internal.php.net
 
-[main]
-service3 ansible_host=service3.ams3.do.php.backend.lol
+[wiki]
+service1 ansible_host=service1-ams.internal.php.net
+
+#[downloads]
+#service1 ansible_host=service1.ams3.do.php.backend.lol
+
+#[main]
+#service3 ansible_host=service3.ams3.do.php.backend.lol

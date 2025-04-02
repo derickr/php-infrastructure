@@ -1,8 +1,8 @@
 # bless https://forum.ansible.com/t/ansible-playbook-through-proxy-with-interactive-login/11076/2
 CanonicalizeHostname always
-CanonicalDomains php.backend.lol
+CanonicalDomains internal.php.net
 
-Host jumphost0.ams3.do.php.backend.lol jumphost1.nyc1.do.php.backend.lol
+Host jump-ams-1.internal.php.net jump-sfo-1.internal.php.net
     ProxyCommand   none
     AddKeysToAgent   no
     ForwardAgent    yes
@@ -10,5 +10,5 @@ Host jumphost0.ams3.do.php.backend.lol jumphost1.nyc1.do.php.backend.lol
     ControlPersist   4h
     ControlPath    ~/.ssh/cp-socket-%C
 
-Host *.php.backend.lol
-    ProxyJump jumphost0.ams3.do.php.backend.lol
+Host *.internal.php.net
+    ProxyJump jump-ams-1.internal.php.net

@@ -1,10 +1,5 @@
 admins:
-  - name: jacoba
-    GA_file: /home/jacoba/.google_authenticator
+  - name: derick
+    GA_file: /home/derick/.google_authenticator
     pubkeys:
-      - ssh-rsa BeinggorgeouswithbellysideuphuntanythingthatmovesforhumanisbehindacloseddooremergencyabandonedmeeooowwwwGivemeattentionorfacethewrathofmyclawsfatbabycatbestbuddylittleguykittyipsumdolorsitametshedeverywhereshedeverywherestretchingattackyourankleschasethereddothairballruncatnipeatthegrasssniff== cat@ipsum.de
-  - name: ninetteadhikari
-    GA_file: /Users/ninette/ninette.google_authenticator
-    pubkeys:
-      - ssh-rsa Lickhumanwithsandpapertongueheadbuttowner/skneewacktheminifurrymouse+Commencemidnightzoomiesnyaanyaasoleavehaironowner'sclothes+Catasstrophynyanyanyanlovesocatsitlikebreadbutcatmilkcopyparkpeewalkownerescapeboredtiredcagedroppingssickvetvomitandccccccccccccaaaaaaaaaaaaaaatttttttttttttttttsssssssssssssssssofindboxalittletoosmallandcurlupwithfurhangingout == cat@ipsum.com
-      - ssh-rsa Hackupfurballspleaseletmeoutsidepoutyfaceyay+wait+it/scoldoutpleaseletmeinsidepoutyfaceoh+thankyourubagainstmommy/slegohitlookssoniceout+pleaseletmeoutsideagaintheneighborcatwasmeantomepleaseletmebackinside+Eataneasterfeatherasifitwereabirdthenburpvictoriously+buttenderwoopspoophangingfrombuttmustgetridrunrunaroundhousedragpooponfloormaybeitcomesoffwoopsleftbrownmarksonfloorhumanslavecleanlickbuttnowfordreamabouthuntingbirdsandeatthefatcatsfood= catipsum@Cats-MBP
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO2nWy6nlI1ejBsaWN1OM0GH8Wt7gjoZrDCcs3fD5Rb9 derick@gargleblaster

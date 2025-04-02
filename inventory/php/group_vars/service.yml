@@ -1,25 +1,22 @@
-jumphost: "{{ host | default('jumphost0.ams3.do.php.backend.lol') }}"
+jumphost: "{{ host | default('jump-ams-1.internal.php.net') }}"
 
-rsync_domain: rsync0.ams3.do.php.backend.lol
+rsync_domain: rsync.php.net
 
-myra_hosts: ["192.666.6.666", "192.777.7.777"]
+myra_hosts: [ "103.51.164.0/22", "185.85.3.0/24", "213.155.71.142/32", "213.61.215.48/29", "45.112.84.0/22", "45.91.156.0/22", "5.9.89.19/32", "80.90.0.0/20", "82.199.130.0/24", "82.199.157.0/24", "2001:920:198c::fefe/128", "2a01:4a0::/32", "2a01:4f8:162:1346::2/128", "2a02:cb43::/32", "2a02:cb44::/32", "2a02:cb45:101::/48", "2a02:cb46::/32", "2a02:cb47::/32", "109.150.25.108" ]
 
-# the actual domains should be: *.php.net
-# using *.php.backend.lol for test purposes
-downloads_domain: downloads.php.backend.lol
-shared_domain: shared.php.backend.lol
+downloads_domain: downloads.internal.php.net
+shared_domain: shared.internal.php.net
 
-wiki_domain: wiki.php.backend.lol
-wiki_alias: wiki2.php.backend.lol
+wiki_domain: wiki.internal.php.net
 
-museum_domain: museum.php.backend.lol
+museum_domain: museum.internal.php.net
 
-main_domain: main.php.backend.lol
-main_domain_alias: master.php.backend.lol
-lxr_domain: lxr.php.backend.lol
-status_domain: status.php.backend.lol
-gcov_domain: gcov.php.backend.lol
+main_domain: main.internal.php.net
+main_domain_alias: master.internal.php.net
+lxr_domain: lxr.internal.php.net
+status_domain: status.internal.php.net
+gcov_domain: gcov.internal.php.net
 
 # systems_email: systems@php.net and master_email: webmaster@php.net
-systems_email: engineering@neighbourhood.ie
-master_email: engineering@neighbourhood.ie
+systems_email: systems@php.net
+master_email: webmaster@php.net
