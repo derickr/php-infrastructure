@@ -84,9 +84,19 @@
 
 - include_tasks: deploy.yml
 
-- include_tasks: backup.yml
+- name: Run backup tasks
+  include_role:
+    name: backup_property
+  vars:
+    property: wiki-data
+    backup_path: '{{ wiki_data_dir }}'
 
 # This can be run when backup data is run at least once and available for restore
 # The restore role should be skipped when initializing the property for the first time with --extra-vars "first_run=true"
-- include_tasks: restore.yml
+- name: Run restore tasks
+  include_role:
+    name: restore_property
+  vars:
+    property: wiki-data
+    backup_path: '{{ wiki_data_dir }}'
   when: first_run is not defined or not first_run
