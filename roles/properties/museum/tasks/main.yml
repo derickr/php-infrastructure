@@ -157,11 +157,11 @@
     backup_path: '{{ museum_docroot }}/{{ museum_domain }}'
 
 # This can be run when backup data is run at least once and available for restore
-# The restore role should be skipped when initializing the property for the first time with --extra-vars "first_run=true"
+# The restore role will only be run, when you pass --extra-vars "restore_data=true"
 - name: Run restore tasks
   include_role:
     name: restore_property
   vars:
     property: museum
     backup_path: "{{ museum_docroot }}/{{ museum_domain }}"
-  when: first_run is not defined or not first_run
+  when: restore_data is defined and restore_data
