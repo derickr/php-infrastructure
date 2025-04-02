@@ -1,7 +1,8 @@
 #!/bin/sh
 
 # Redirect all output to the backup.log
-exec > "/local/systems/backup.log" 2>&1
+DOW=`date +%w`
+exec > "/local/systems/backup-${DOW}.log" 2>&1
 
 cd {{ backup_dir }}
 
@@ -12,28 +13,16 @@ export AWS_ACCESS_KEY_ID="{{ DO_access_key }}"
 export AWS_SECRET_ACCESS_KEY="{{ DO_secret_key }}"
 export RESTIC_PASSWORD="{{ restic_password }}"
 
-
-# for debian etch, replace "media" by "data/media" as per https://github.com/php/systems/blob/master/backup-wiki-php-net#L57
 # Compress wiki data
-tar cfP - {{ wiki_home_path }}/data | bzip2 -9 > {{ backup_name_data }}.tar.bz2
+tar cfP - {{ wiki_data_dir }} | bzip2 -9 > {{ backup_name }}.tar.bz2
 echo "[$(date)] Data compression completed."
 
-# Compress wiki media
-# sudo bash -c {{ wiki_home_path }}/media | bzip2 -9 > {{ backup_name_media }}.tar.bz2
-tar cfP - {{ wiki_home_path }}/media | bzip2 -9 > {{ backup_name_media }}.tar.bz2
-echo "[$(date)] Media compression completed."
-
 # S3 Upload: wiki data
-restic -r s3:{{ DO_bucket_url }}/{{ DO_bucket_name }}/wiki/data backup {{ backup_name_data }}.tar.bz2
-exit_status_data=$?
-echo "restic status for data: " $exit_status_data
+restic -r s3:{{ DO_bucket_url }}/{{ DO_bucket_name }}/wiki-data backup {{ backup_name }}.tar.bz2
+exit_status=$?
+echo "restic status for data: " $exit_status
 
-# S3 Upload: wiki media
-restic -r s3:{{ DO_bucket_url }}/{{ DO_bucket_name }}/wiki/media backup {{ backup_name_media }}.tar.bz2
-exit_status_media=$?
-echo "restic status for media: " $exit_status_media
-
-if [ $exit_status_data -eq 0 ] && [ $exit_status_media -eq 0 ]; then
+if [ $exit_status -eq 0 ]; then
   echo "[$(date)] S3 upload completed."
 
   # Remove local backup data

@@ -21,12 +21,12 @@
     mode: "755"
 
 # the next tasks are for test purposes and can be removed once proper data is added to the machine
-- include_tasks: add_testData.yml
+#- include_tasks: add_testData.yml
 
 # Initialize Restic for both data and media folders
 - name: Initialize Restic
   command:
-    cmd: "restic -r s3:{{ DO_bucket_url }}/{{ DO_bucket_name }}/wiki/{{ item }} init"
+    cmd: "restic -r s3:{{ DO_bucket_url }}/{{ DO_bucket_name }}/wiki-data init"
   environment:
     AWS_ACCESS_KEY_ID: "{{ DO_access_key }}"
     AWS_SECRET_ACCESS_KEY: "{{ DO_secret_key }}"
@@ -37,14 +37,17 @@
     restic_init_result.rc != 0 and
     'repository master key and config already initialized' not in restic_init_result.stderr
   changed_when: restic_init_result.rc == 0
-  loop:
-    - data
-    - media
 
 - name: Create backup script
   template:
     src: templates/backup-wiki
     dest: /local/systems/backup-wiki
+    mode: "755"
+
+- name: Create restore script
+  template:
+    src: templates/restore-wiki
+    dest: /local/systems/restore-wiki
     mode: "755"
 
 - name: Create daily property backup
@@ -54,18 +57,10 @@
     special_time: daily
     state: present
 
-- name: Daily prune wiki/data, keep only the last 2 backups
+- name: Daily prune wiki, keep only the last 30 backups
   cron:
-    name: Daily prune wiki/data
+    name: Daily prune wiki
     job: |
-      AWS_ACCESS_KEY_ID="{{ DO_access_key }}" AWS_SECRET_ACCESS_KEY="{{ DO_secret_key }}" RESTIC_PASSWORD="{{ restic_password }}" restic -r s3:{{ DO_bucket_url }}/{{ DO_bucket_name }}/wiki/data forget --keep-last 2 --prune
-    state: present
-    special_time: daily
-
-- name: Daily prune wiki/media, keep only the last 2 backups
-  cron:
-    name: Daily prune wiki/media
-    job: |
-      AWS_ACCESS_KEY_ID="{{ DO_access_key }}" AWS_SECRET_ACCESS_KEY="{{ DO_secret_key }}" RESTIC_PASSWORD="{{ restic_password }}" restic -r s3:{{ DO_bucket_url }}/{{ DO_bucket_name }}/wiki/media forget --keep-last 2 --prune
+      AWS_ACCESS_KEY_ID="{{ DO_access_key }}" AWS_SECRET_ACCESS_KEY="{{ DO_secret_key }}" RESTIC_PASSWORD="{{ restic_password }}" restic -r s3:{{ DO_bucket_url }}/{{ DO_bucket_name }}/wiki-data forget --keep-daily 7 --keep-weekly 4 --keep-monthly 6 --prune
     state: present
     special_time: daily

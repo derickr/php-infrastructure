@@ -1,0 +1,42 @@
+#!/bin/sh
+
+# Redirect all output to the restore.log
+exec > "/local/systems/restore.log" 2>&1
+
+cd {{ restore_dir }}
+
+echo "[$(date)] Starting restore process..."
+
+# Environment Variables
+export AWS_ACCESS_KEY_ID="{{ DO_access_key }}"
+export AWS_SECRET_ACCESS_KEY="{{ DO_secret_key }}"
+export RESTIC_PASSWORD="{{ restic_password }}"
+
+# S3 Upload: wiki data
+restic -r s3:{{ DO_bucket_url }}/{{ DO_bucket_name }}/wiki-data restore latest --target {{ restore_dir }}
+exit_status=$?
+echo "restic status for data: " $exit_status
+
+if [ $exit_status -eq 0 ]; then
+  echo "[$(date)] S3 download completed."
+else 
+  echo "[$(date)] Could not download data."
+  exit 1
+fi
+
+echo "[$(date)] Extracting data."
+cd {{ restore_dir }} && tar xjf "{{ backup_name }}.tar.bz2"
+
+echo "[$(date)] Recreate target dir and set permissions."
+mkdir -p "{{ wiki_data_dir }}"
+chown www-data:www-data "{{ wiki_data_dir }}"
+chmod 0755 "{{ wiki_data_dir }}"
+
+echo "[$(date)] Copying files back."
+cp -a {{ restore_dir }}/local/this-box/wiki-data/* "{{ wiki_data_dir }}/"
+  
+echo "[$(date)] Restore process finished successfully."
+  
+# Remove local restore data
+rm -rf {{ restore_dir }}/*
+echo "[$(date)] Cleanup completed."

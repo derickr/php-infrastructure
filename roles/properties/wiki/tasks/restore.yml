@@ -7,45 +7,12 @@
 
 - name: Create a local restore directory
   file:
-    path: "{{ restore_dir }}/{{ item  }}"
+    path: "{{ restore_dir }}"
     state: directory
     mode: "755"
-  loop:
-    - data
-    - media
 
 - name: Restore backup
-  command: |
-    restic -r s3:{{ DO_bucket_url }}/{{ DO_bucket_name }}/wiki/{{ item }} restore latest --target {{ restore_dir }}
-  environment:
-    AWS_ACCESS_KEY_ID: "{{ DO_access_key }}"
-    AWS_SECRET_ACCESS_KEY: "{{ DO_secret_key }}"
-    RESTIC_PASSWORD: "{{ restic_password }}"
-  loop:
-    - media
-    - data
-
-- name: Find tars
-  find:
-    paths: "{{ restore_dir }}"
-    patterns: '*.tar.bz2'
-  register: restores
-
-- name: Extract the .tar backup file
-  unarchive:
-    src: "{{ item }}"
-    dest: "{{ restore_dir }}/{{ item | basename | regex_replace('[-0-9]+|\\.tar\\.bz2$', '') }}"
-    remote_src: yes
-  loop: "{{ restores.files | map(attribute='path') | list }}"
-
-- name: Copy restored data to the doc root
-  copy:
-    src: "{{ restore_dir }}/{{ item }}/{{ wiki_home_path }}/{{ item }}/"
-    dest: "{{ wiki_home_path }}/{{ item }}"
-    remote_src: yes
-  loop:
-    - data
-    - media
+  command: /local/systems/restore-wiki
 
 - name: Remove temporary restore directory
   file:

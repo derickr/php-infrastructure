@@ -1,11 +1,9 @@
-# Reference: https://github.com/php/systems/blob/master/backup-wiki-php-net#L8
-wiki_home_path: /home/web/{{ wiki_domain }}/public_html
-wiki_docroot: /srv/web-wiki/dokuwiki/dokuwiki
+wiki_docroot: /var/www/sites/wiki.php.net
+wiki_data_dir: /local/this-box/wiki-data
 wiki_config_file: wiki.conf
 
 backup_dir: /local/backups
-backup_name_data: "data-{{ ansible_date_time.date }}"
-backup_name_media: "media-{{ ansible_date_time.date }}"
+backup_name: "wiki-data"
 
 # Restore backup in local restore directory
 restore_dir: /local/restore

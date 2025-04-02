@@ -7,15 +7,10 @@
       - apache2
       - libapache2-mod-php8.2
       - php8.2
+      - htop
+      - lsof
     state: present
     update_cache: yes
-
-- name: Run certbot tasks
-  include_role:
-    name: add_certbot
-  vars:
-    domain: "{{ wiki_domain }}"
-    email: "{{ systems_email }}"
 
 - name: Add Apache config for wiki
   template:
@@ -23,8 +18,7 @@
     dest: "/etc/apache2/sites-available/{{ wiki_config_file }}"
   notify: reload apache
 
-# because we run certbot with certonly, and we use Rewrite in our apache config
-# we have to enable this
+# because we use Rewrite in our apache config we have to enable this
 - name: Enable Apache PHP module
   command: a2enmod {{ item }}
   args:
@@ -41,11 +35,52 @@
     creates: "/etc/apache2/sites-enabled/{{ wiki_config_file }}"
   notify: reload apache
 
+# Self-signed SSL
+- name: Create the SSL Certificate
+  include_role:
+    name: add_self-signed_certs
+
+- name: Create a strong Diffie-Hellman group
+  command: openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096
+  args:
+    creates: /etc/ssl/certs/dhparam.pem
+
+- name: Set permissions for ssl certs
+  file:
+    path: "{{ item }}"
+    mode: "600"
+    owner: www-data
+    group: www-data
+  loop:
+    - /etc/ssl/certs/php-self-signed.key
+    - /etc/ssl/certs/php-self-signed.crt
+
 - name: Ensure Apache is started and enabled
   service:
     name: apache2
     state: started
     enabled: yes
+
+# Firewall settings
+- name: Block port 80 access
+  ufw:
+    rule: deny
+    proto: tcp
+    port: 80
+
+- name: Allow access to port 443 only from Myra hosts
+  ufw:
+    rule: allow
+    port: 443
+    proto: tcp
+    src: "{{ item }}"
+  loop: "{{ myra_hosts }}"
+
+- name: Block port 443 access for elsewhere
+  ufw:
+    rule: deny
+    port: 443
+    proto: tcp
 
 - include_tasks: deploy.yml
 

@@ -1,11 +1,23 @@
 - name: Create local directory to store wiki content
   file:
     state: directory
-    dest: "{{ wiki_docroot }}"
+    dest: "{{ wiki_data_dir }}"
     mode: "755"
     owner: www-data
     group: www-data
     recurse: yes
+
+- name: Create local directores for dokuwiki data elements
+  file:
+    state: directory
+    dest: "{{ wiki_data_dir }}/{{ item }}"
+    mode: "755"
+    owner: www-data
+    group: www-data
+    recurse: yes
+  loop:
+   - log
+   - cache
 
 - name: Copy update-wiki script to the server
   template:
@@ -16,26 +28,9 @@
 - name: Fetch wiki content
   command: /local/systems/update-wiki
 
-- name: Update permission of wiki doc root
-  file:
-    dest: "{{ wiki_docroot }}"
-    mode: "755"
-    owner: www-data
-    group: www-data
-    recurse: yes
-
-- name: Create local directory for dokuwiki data log
-  file:
-    state: directory
-    dest: "{{ wiki_docroot }}/data/log"
-    mode: "755"
-    owner: www-data
-    group: www-data
-    recurse: yes
-
-- name: Deploy wiki daily
+- name: Deploy wiki hourly
   cron:
-    name: Run update-wiki daily
-    special_time: daily
+    name: Run update-wiki hourly
+    special_time: hourly
     job: /local/systems/update-wiki
 
