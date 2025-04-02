@@ -3,7 +3,8 @@
 cd {{ backup_dir }}
 
 # Redirect all output to the backup.log
-exec > "/local/systems/backup.log" 2>&1
+DOW=`date +%w`
+exec > "/local/systems/backup-${DOW}.log" 2>&1
 
 echo "[$(date)] Starting backup process..."
 
@@ -11,7 +12,6 @@ echo "[$(date)] Starting backup process..."
 export AWS_ACCESS_KEY_ID="{{ DO_access_key }}"
 export AWS_SECRET_ACCESS_KEY="{{ DO_secret_key }}"
 export RESTIC_PASSWORD="{{ restic_password }}"
-
 
 # Compress backup
 tar cfP - {{ backup_path }} | bzip2 -9 > {{ backup_name }}.tar.bz2

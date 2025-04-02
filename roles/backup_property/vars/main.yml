@@ -1,4 +1,4 @@
 # Setting backup name
 
 backup_dir: /local/backups
-backup_name: "{{ property }}-{{ ansible_date_time.date }}"
+backup_name: "{{ property }}"
