@@ -17,7 +17,7 @@
 
 - name: Fail if there is no ssh_key for the new user
   fail:
-    msg: Please add the user's public ssh key to roles/add_GA_file/templates/ssh_keys!
+    msg: Please add the user's public ssh key to roles/add_ssh_key/templates/ssh_keys!
   when: (pubkeys is not defined) and (not ssh_key.stat.exists)
 
 - name: create ssh folder
