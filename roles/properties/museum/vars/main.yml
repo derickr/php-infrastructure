@@ -1,5 +1,5 @@
 
 # Change version number to update nginx
-nginx_version: "1.24.0"
+nginx_version: "1.27.4"
 
 museum_docroot: /local/www
