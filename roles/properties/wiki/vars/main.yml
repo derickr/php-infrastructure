@@ -1,6 +1,7 @@
 wiki_docroot: /var/www/sites/wiki.php.net
 wiki_data_dir: /local/this-box/wiki-data
 wiki_config_file: wiki.conf
+wiki_mod_remoteip_config_file: remoteip.conf
 
 backup_dir: /local/backups
 backup_name: "wiki-data"

@@ -27,12 +27,19 @@
     - php8.2
     - headers
     - rewrite
+    - remoteip
   notify: reload apache
 
 - name: Enable config file
   shell: "a2ensite {{ wiki_config_file }}"
   args:
     creates: "/etc/apache2/sites-enabled/{{ wiki_config_file }}"
+  notify: reload apache
+
+- name: Add remoteip logging config for wiki
+  template:
+    src: templates/{{ wiki_mod_remoteip_config_file }}
+    dest: "/etc/apache2/conf-enabled/{{ wiki_mod_remoteip_config_file }}"
   notify: reload apache
 
 # Self-signed SSL
