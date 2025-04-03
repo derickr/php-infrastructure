@@ -16,6 +16,7 @@
     group: www-data
     recurse: yes
   loop:
+   - auth
    - log
    - cache
 
