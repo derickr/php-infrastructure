@@ -1,19 +1,9 @@
 # This role sets up the property shared.php.net with Apache together with the php module
 # It uses self-signed SSL certs
 
-- name: Install Apache with mod-php, php and openssl
-  apt:
-    name:
-      - apache2
-      - libapache2-mod-php8.2
-      - php8.2
-      - apache2-utils
-    state: present
-    update_cache: yes
-
-- name: Create the self-signed SSL Certificate
+- name: Install Apache and common modules
   include_role:
-    name: add_self-signed_certs
+    name: add_apache_with_modules
 
 - name: Add Apache config for shared.php.net
   template:
@@ -27,16 +17,6 @@
     dest: /etc/apache2/apache2.conf
     line: LoadModule expires_module /usr/lib/apache2/modules/mod_expires.so
     state: present
-
-- name: Enable modules in Apache
-  command: a2enmod {{ item }}
-  args:
-    creates: /etc/apache2/mods-enabled/{{ item }}.load
-  loop:
-    - ssl
-    - php8.2
-    - headers
-  notify: reload apache
 
 - name: Enable config file
   shell: "a2ensite {{ shared_config_file }}"
@@ -52,16 +32,3 @@
 
 - include_tasks: deploy.yml
 
-# Firewall settings
-# - name: Block port 80 access
-#   ufw:
-#     rule: deny
-#     port: 80
-
-# - name: Allow access to port 443 only from Myra hosts
-#   ufw:
-#     rule: allow
-#     port: 443
-#     proto: tcp
-#     src: "{{ item }}"
-#     loop: "{{ myra_hosts }}"

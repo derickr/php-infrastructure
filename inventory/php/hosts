@@ -7,7 +7,7 @@ jumphost1 ansible_host=jump-sfo-1.internal.php.net
 
 [service:children]
 wiki
-#downloads
+downloads
 museum
 #main
 
@@ -17,8 +17,8 @@ service0 ansible_host=service0-ams.internal.php.net
 [wiki]
 service1 ansible_host=service1-ams.internal.php.net
 
-#[downloads]
-#service1 ansible_host=service1.ams3.do.php.backend.lol
+[downloads]
+service2 ansible_host=service2-ams.internal.php.net
 
 #[main]
 #service3 ansible_host=service3.ams3.do.php.backend.lol

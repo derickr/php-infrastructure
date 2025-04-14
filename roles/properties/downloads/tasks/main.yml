@@ -1,21 +1,17 @@
 # This role sets up the property downloads.php.net with Apache together with the php module
-# It uses certbot SSL certs
+# It uses self-signed SSL certs
 
-- name: Install Apache with mod-php and php
-  apt:
-    name:
-      - apache2
-      - libapache2-mod-php8.2
-      - php8.2
-    state: present
-    update_cache: yes
-
-- name: Run certbot tasks
+- name: Install Apache and common modules
   include_role:
-    name: add_certbot
-  vars:
-    domain: "{{ downloads_domain }}"
-    email: "{{ systems_email }}"
+    name: add_apache_with_modules
+
+- name: Enable 'userdir' Apache module
+  command: a2enmod {{ item }}
+  args:
+    creates: /etc/apache2/mods-enabled/{{ item }}.load
+  loop:
+    - userdir
+  notify: reload apache
 
 - name: create local box
   file:
@@ -35,17 +31,6 @@
   template:
     src: templates/downloads.php.net.conf
     dest: "/etc/apache2/sites-available/{{ downloads_config_file }}"
-  notify: reload apache
-
-# because we run certbot with certonly, and we use Rewrite in our apache config
-# we have to enable rewrite module
-- name: Enable Apache php and rewrite modules
-  command: a2enmod {{ item }}
-  args:
-    creates: /etc/apache2/mods-enabled/{{ item }}.load
-  loop:
-    - rewrite
-    - php8.2
   notify: reload apache
 
 - name: Enable config file
@@ -79,4 +64,4 @@
   vars:
     property: downloads
     backup_path: "{{ downloads_home_dir }}"
-  when: first_run is not defined or not first_run
+  when: restore_data is defined and restore_data

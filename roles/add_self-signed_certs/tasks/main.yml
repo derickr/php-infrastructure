@@ -29,12 +29,26 @@
   args:
     creates: /etc/ssl/certs/php-self-signed.key
 
-# Note: Validity Period of Letsencrypt is 90 days, 1 year seems to be common for ssssl :snake:
 - name: Generate self-signed certificate
   command: >
     openssl req -new -x509 -key /etc/ssl/certs/php-self-signed.key
     -out /etc/ssl/certs/php-self-signed.crt
-    -days 365
+    -days 3650
     -subj "/C=US/ST=State/L=City/O=php/OU=Unit/CN=php.net"
   args:
     creates: /etc/ssl/certs/php-self-signed.crt
+
+- name: Create a strong Diffie-Hellman group
+  command: openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096
+  args:
+    creates: /etc/ssl/certs/dhparam.pem
+
+- name: Set permissions for ssl certs
+  file:
+    path: "{{ item }}"
+    mode: "600"
+    owner: www-data
+    group: www-data
+  loop:
+    - /etc/ssl/certs/php-self-signed.key
+    - /etc/ssl/certs/php-self-signed.crt
