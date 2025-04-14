@@ -1,36 +1,14 @@
 # This role sets up the property wiki.php.net with Apache together with the php module
 # It uses certbot SSL certs
 
-- name: Install Apache with mod-php and php
-  apt:
-    name:
-      - apache2
-      - libapache2-mod-php8.2
-      - php8.2
-      - php8.2-bz2
-      - php8.2-intl
-      - php8.2-mbstring
-      - htop
-      - lsof
-    state: present
-    update_cache: yes
+- name: Install Apache and common modules
+  include_role:
+    name: add_apache_with_modules
 
 - name: Add Apache config for wiki
   template:
     src: templates/wiki.conf
     dest: "/etc/apache2/sites-available/{{ wiki_config_file }}"
-  notify: reload apache
-
-# because we use Rewrite in our apache config we have to enable this
-- name: Enable Apache PHP module
-  command: a2enmod {{ item }}
-  args:
-    creates: /etc/apache2/mods-enabled/{{ item }}.load
-  loop:
-    - php8.2
-    - headers
-    - rewrite
-    - remoteip
   notify: reload apache
 
 - name: Enable config file
@@ -39,64 +17,11 @@
     creates: "/etc/apache2/sites-enabled/{{ wiki_config_file }}"
   notify: reload apache
 
-- name: Add remoteip logging config for wiki
-  template:
-    src: templates/{{ wiki_mod_remoteip_config_file }}
-    dest: "/etc/apache2/conf-enabled/{{ wiki_mod_remoteip_config_file }}"
-  notify: reload apache
-
-- name: Add opcache and other local PHP settings
-  template:
-    src: templates/90-local-settings.ini
-    dest: /etc/php/8.2/apache2/conf.d/90-local-settings.ini
-  notify: reload apache
-
-# Self-signed SSL
-- name: Create the SSL Certificate
-  include_role:
-    name: add_self-signed_certs
-
-- name: Create a strong Diffie-Hellman group
-  command: openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096
-  args:
-    creates: /etc/ssl/certs/dhparam.pem
-
-- name: Set permissions for ssl certs
-  file:
-    path: "{{ item }}"
-    mode: "600"
-    owner: www-data
-    group: www-data
-  loop:
-    - /etc/ssl/certs/php-self-signed.key
-    - /etc/ssl/certs/php-self-signed.crt
-
 - name: Ensure Apache is started and enabled
   service:
     name: apache2
     state: started
     enabled: yes
-
-# Firewall settings
-- name: Block port 80 access
-  ufw:
-    rule: deny
-    proto: tcp
-    port: 80
-
-- name: Allow access to port 443 only from Myra hosts
-  ufw:
-    rule: allow
-    port: 443
-    proto: tcp
-    src: "{{ item }}"
-  loop: "{{ myra_hosts }}"
-
-- name: Block port 443 access for elsewhere
-  ufw:
-    rule: deny
-    port: 443
-    proto: tcp
 
 - include_tasks: deploy.yml
 
