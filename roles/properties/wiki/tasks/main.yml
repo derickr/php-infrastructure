@@ -29,7 +29,7 @@
   include_role:
     name: backup_property
   vars:
-    property: wiki-data
+    property: wiki
     backup_path: '{{ wiki_data_dir }}'
 
 # This can be run when backup data is run at least once and available for restore

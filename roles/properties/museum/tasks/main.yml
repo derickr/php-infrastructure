@@ -154,7 +154,7 @@
     name: backup_property
   vars:
     property: museum
-    backup_path: '{{ museum_docroot }}/{{ museum_domain }}'
+    backup_paths: [ '{{ museum_docroot }}/{{ museum_domain }}' ]
 
 # This can be run when backup data is run at least once and available for restore
 # The restore role will only be run, when you pass --extra-vars "restore_data=true"

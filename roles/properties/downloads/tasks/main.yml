@@ -54,7 +54,7 @@
     name: backup_property
   vars:
     property: downloads
-    backup_path: "{{ downloads_home_dir }}"
+    backup_paths: [ "{{ downloads_home_dir }}" ]
 
 # This can be run when backup data is run at least once and available for restore
 # The restore role should be skipped when initializing the property for the first time with --extra-vars "first_run=true"

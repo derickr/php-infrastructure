@@ -13,23 +13,25 @@ export AWS_ACCESS_KEY_ID="{{ DO_access_key }}"
 export AWS_SECRET_ACCESS_KEY="{{ DO_secret_key }}"
 export RESTIC_PASSWORD="{{ restic_password }}"
 
-# Compress backup
-tar cfP - {{ backup_path }} | bzip2 -9 > {{ backup_name }}.tar.bz2
-echo "[$(date)] Compression completed."
+# Do backups
+{% for backup_path in backup_paths %}
 
-# S3 Upload
-restic -r s3:{{ DO_bucket_url }}/{{ DO_bucket_name }}/{{ property }} backup {{ backup_name }}.tar.bz2
-exit_status=$?
-echo "restic status: " $exit_status
+    # Backup path {{ backup_path }}
+    restic -r s3:{{ DO_bucket_url }}/{{ DO_bucket_name }}/{{ property }} backup {{ backup_path }}
+    exit_status=$?
+    echo "restic status: " $exit_status
 
-if [ $exit_status -eq 0 ]; then
-  echo "[$(date)] S3 upload completed."
+    if [ $exit_status -eq 0 ]; then
+      echo "[$(date)] S3 upload completed."
 
-  # Remove local backup data
-  rm -rf {{ backup_dir }}/*
-  echo "[$(date)] Cleanup completed."
-  echo "[$(date)] Backup process finished successfully."
+    else
+      echo "[$(date)] Could not upload data."
+    fi
 
-else
-  echo "[$(date)] Could not upload data."
-fi
+{% endfor %}
+
+echo "[$(date)] Pruning old backups."
+
+restic -r s3:{{ DO_bucket_url }}/{{ DO_bucket_name }}/{{ property }} forget --keep-daily 7 --keep-weekly 4 --keep-monthly 6 --prune
+
+echo "[$(date)] Backup process finished successfully."
