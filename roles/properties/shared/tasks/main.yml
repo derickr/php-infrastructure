@@ -7,7 +7,7 @@
 
 - name: Add Apache config for shared.php.net
   template:
-    src: templates/shared.php.net.conf
+    src: templates/{{ shared_config_file }}
     dest: "/etc/apache2/sites-available/{{ shared_config_file }}"
   notify: reload apache
 

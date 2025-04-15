@@ -1,6 +1,5 @@
+downloads_docroot: /var/www/sites
 downloads_config_file: downloads.php.net.conf
 
-downloads_docroot: /local/www/sites
 downloads_home_dir: /home
-
 downloads_box: /local/this-box
