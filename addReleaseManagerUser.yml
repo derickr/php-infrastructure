@@ -58,8 +58,15 @@
         append: yes
         shell: /bin/bash
 
+    - name: Create public_html directory for user
+      file:
+        state: directory
+        dest: "/home/{{ username }}/public_html"
+        mode: "755"
+        owner: "{{ username }}"
+        group: "{{ username }}"
+
   roles:
     - role: add_ssh_key
       vars:
         username: "{{ username }}"
-
