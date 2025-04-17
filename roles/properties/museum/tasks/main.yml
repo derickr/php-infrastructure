@@ -10,10 +10,12 @@
     - zlib1g
     - zlib1g-dev
     - libssl-dev
-    - htop
-    - lsof
     state: present
     update_cache: yes
+
+- name: Install common software and configuration
+  include_role:
+    name: install_common_software
 
 # Install nginx with fancyindex: https://github.com/aperezdc/ngx-fancyindex?tab=readme-ov-file#building
 - name: Download the latest version of Nginx source

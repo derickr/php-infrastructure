@@ -1,6 +1,10 @@
 # This role sets up the property wiki.php.net with Apache together with the php module
 # It uses certbot SSL certs
 
+- name: Install common software and configuration
+  include_role:
+    name: install_common_software
+
 - name: Install Apache and common modules
   include_role:
     name: add_apache_with_modules

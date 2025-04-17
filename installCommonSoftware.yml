@@ -1,0 +1,11 @@
+# Run this playbook to set up your wiki machine
+# ansible-playbook initServiceWiki.yml
+
+- hosts:
+  - service
+
+  become: yes
+  become_user: root
+
+  roles:
+    - role: install_common_software

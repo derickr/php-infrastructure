@@ -1,0 +1,19 @@
+# This role install common software and configuration that we'd like on every machine
+- name: Install Common Software
+  apt:
+    name:
+    - htop
+    - lsof
+    - strace
+    - logrotate
+    - gdb
+    - net-tools
+    - mc
+    state: present
+    update_cache: yes
+
+- name: Create .vimrc File
+  template:
+    src: templates/vimrc
+    dest: /root/.vimrc
+    mode: "644"
