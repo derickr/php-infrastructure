@@ -2,7 +2,8 @@ jumphost: "{{ host | default('jump-ams-1.internal.php.net') }}"
 
 rsync_domain: rsync.php.net
 
-myra_hosts: [ "103.51.164.0/22", "185.85.3.0/24", "213.155.71.142/32", "213.61.215.48/29", "45.112.84.0/22", "45.91.156.0/22", "5.9.89.19/32", "80.90.0.0/20", "82.199.130.0/24", "82.199.157.0/24", "2001:920:198c::fefe/128", "2a01:4a0::/32", "2a01:4f8:162:1346::2/128", "2a02:cb43::/32", "2a02:cb44::/32", "2a02:cb45:101::/48", "2a02:cb46::/32", "2a02:cb47::/32", "109.150.25.108" ]
+myra_hosts: [ "103.51.164.0/22", "185.85.3.0/24", "213.155.71.142/32", "213.61.215.48/29", "45.112.84.0/22", "45.91.156.0/22", "5.9.89.19/32", "80.90.0.0/20", "82.199.130.0/24", "82.199.157.0/24", "2001:920:198c::fefe/128", "2a01:4a0::/32", "2a01:4f8:162:1346::2/128", "2a02:cb43::/32", "2a02:cb44::/32", "2a02:cb45:101::/48", "2a02:cb46::/32", "2a02:cb47::/32" ]
+test_hosts: [ "81.158.149.1" ]
 
 downloads_domain: downloads.php.net
 downloads_domain_alias: downloads.internal.php.net
@@ -10,9 +11,11 @@ downloads_domain_alias: downloads.internal.php.net
 shared_domain: shared.php.net
 shared_domain_alias: shared.internal.php.net
 
-wiki_domain: wiki.internal.php.net
+wiki_domain: wiki.php.net
+wiki_domain_alias: wiki.internal.php.net
 
-museum_domain: museum.internal.php.net
+museum_domain: museum.php.net
+museum_domain_alias: museum.internal.php.net
 
 main_domain: main.internal.php.net
 main_domain_alias: master.internal.php.net

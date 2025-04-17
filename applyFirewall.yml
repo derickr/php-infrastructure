@@ -45,13 +45,21 @@
       proto: tcp
       port: 80
 
-  - name: Allow access to port 443 only from Myra hosts
+  - name: Allow access to port 443 from Myra hosts
     ufw:
       rule: allow
       port: 443
       proto: tcp
       src: "{{ item }}"
     loop: "{{ myra_hosts }}"
+
+  - name: Allow access to port 443 from test hosts
+    ufw:
+      rule: allow
+      port: 443
+      proto: tcp
+      src: "{{ item }}"
+    loop: "{{ test_hosts }}"
 
   - name: Block port 443 access for elsewhere
     ufw:
