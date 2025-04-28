@@ -7,5 +7,10 @@
   become: yes
   become_user: root
 
+  pre_tasks:
+    - name: Install common software and configuration
+      include_role:
+        name: install_common_software
+
   roles:
     - role: properties/museum

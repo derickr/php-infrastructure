@@ -7,5 +7,15 @@
   become: yes
   become_user: root
 
+  pre_tasks:
+    - name: Install common software and configuration
+      include_role:
+        name: install_common_software
+
+    - name: Install Apache and common modules
+      include_role:
+        name: add_apache_with_modules
+
+
   roles:
     - role: properties/wiki

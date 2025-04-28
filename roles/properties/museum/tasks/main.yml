@@ -13,10 +13,6 @@
     state: present
     update_cache: yes
 
-- name: Install common software and configuration
-  include_role:
-    name: install_common_software
-
 # Install nginx with fancyindex: https://github.com/aperezdc/ngx-fancyindex?tab=readme-ov-file#building
 - name: Download the latest version of Nginx source
   get_url:

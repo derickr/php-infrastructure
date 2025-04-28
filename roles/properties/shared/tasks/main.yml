@@ -1,14 +1,6 @@
 # This role sets up the property shared.php.net with Apache together with the php module
 # It uses self-signed SSL certs
 
-- name: Install common software and configuration
-  include_role:
-    name: install_common_software
-
-- name: Install Apache and common modules
-  include_role:
-    name: add_apache_with_modules
-
 - name: Add Apache config for shared.php.net
   template:
     src: templates/{{ shared_config_file }}
