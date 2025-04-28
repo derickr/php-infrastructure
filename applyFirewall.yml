@@ -6,7 +6,7 @@
 
 - hosts:
   - service
-  
+
   become: yes
   become_user: root
 
@@ -21,7 +21,7 @@
   - name: Reset UFW
     ufw:
       state: reset
-  
+
   # Gather jump host names so we can enable port 22 from them
   - name: Gather facts for all jumphosts
     setup:
@@ -61,6 +61,28 @@
       src: "{{ item }}"
     loop: "{{ test_hosts }}"
 
+- hosts:
+  - downloads
+
+  become: yes
+  become_user: root
+
+  tasks:
+  - name: Allow access to port 443 from PECL host(s)
+    ufw:
+      rule: allow
+      port: 443
+      proto: tcp
+      src: "{{ item }}"
+    loop: "{{ pecl_hosts }}"
+
+- hosts:
+  - service
+
+  become: yes
+  become_user: root
+
+  tasks:
   - name: Block port 443 access for elsewhere
     ufw:
       rule: deny
