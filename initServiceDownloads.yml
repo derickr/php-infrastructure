@@ -9,4 +9,5 @@
 
   roles:
     - role: properties/downloads
+    - role: properties/qa
     - role: properties/shared

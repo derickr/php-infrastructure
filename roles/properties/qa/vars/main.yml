@@ -1,0 +1,2 @@
+qa_docroot: /var/www/sites
+qa_config_file: qa.php.net.conf

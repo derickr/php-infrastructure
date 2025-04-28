@@ -1,0 +1,31 @@
+# This role sets up the property qa.php.net with Apache together with the php module
+# It uses self-signed SSL certs
+
+- name: Install common software and configuration
+  include_role:
+    name: install_common_software
+
+- name: Install Apache and common modules
+  include_role:
+    name: add_apache_with_modules
+
+- name: Add Apache config for qa.php.net
+  template:
+    src: templates/{{ qa_config_file }}
+    dest: "/etc/apache2/sites-available/{{ qa_config_file }}"
+  notify: reload apache
+
+- name: Enable config file
+  shell: "a2ensite {{ qa_config_file }}"
+  args:
+    creates: "/etc/apache2/sites-enabled/{{ qa_config_file }}"
+  notify: reload apache
+
+- name: Ensure Apache is started and enabled
+  service:
+    name: apache2
+    state: started
+    enabled: yes
+
+- include_tasks: deploy.yml
+
