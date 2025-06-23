@@ -16,7 +16,12 @@
       include_role:
         name: add_apache_with_modules
 
+    - name: Install Composer
+      include_role:
+        name: install_composer
+
   roles:
     - role: properties/downloads
     - role: properties/qa
     - role: properties/shared
+    - role: properties/talks

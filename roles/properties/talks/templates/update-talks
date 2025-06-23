@@ -1,0 +1,5 @@
+#!/bin/sh
+rsync -azC --timeout=600 --exclude=config.php --exclude=logs --exclude=.git rsync.php.net::talks {{ talks_docroot }}
+
+cd {{ talks_docroot }}
+COMPOSER_ALLOW_SUPERUSER=1 php /local/composer install --ignore-platform-req=ext-mongodb

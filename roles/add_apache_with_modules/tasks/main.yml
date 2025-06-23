@@ -8,6 +8,7 @@
       - php8.2-bz2
       - php8.2-intl
       - php8.2-mbstring
+      - php8.2-xml
     state: present
     update_cache: yes
 

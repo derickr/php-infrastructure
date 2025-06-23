@@ -1,0 +1,24 @@
+- name: Create local directory to store talks content
+  file:
+    state: directory
+    dest: "{{ talks_docroot }}/{{ talks_domain }}"
+    mode: "755"
+
+- name: Create config.php file to configure the presentation system
+  template:
+    src: templates/config.php
+    dest: "{{ talks_docroot }}/config.php"
+    mode: "444"
+
+- name: Copy update-talks script to the server
+  template:
+    src: templates/update-talks
+    dest: /local/systems/update-talks
+    mode: "700"
+
+- name: Create a cron job to run hourly
+  cron:
+    name: Run update-talks hourly
+    special_time: hourly
+    job: /local/systems/update-talks
+

@@ -1,0 +1,12 @@
+# This role installs composer into /local
+
+- name: Install composer install script
+  template:
+    src: templates/install-composer
+    dest: /local/systems
+    mode: "755"
+
+- name: Run composer installer
+  shell: "/local/systems/install-composer"
+  args:
+    creates: "/local/composer"

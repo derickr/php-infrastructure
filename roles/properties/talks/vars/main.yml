@@ -1,0 +1,6 @@
+talks_docroot: /var/www/sites/talks.php.net
+talks_config_file: talks.php.net.conf
+
+# For the aliases where talks was also configured, we set up redirects
+talks_redirect_config_file: talks-redirect.php.net.conf
+talks_old_aliases: [ "conf", "conf2", "pres", "pres2" ]
