@@ -1,0 +1,60 @@
+# This role sets up the property pecl.php.net with Apache together with the php module
+# It uses self-signed SSL certs
+
+- name: Install Software
+  apt:
+    name:
+    - php-pear
+    - php8.2-gd
+    - php8.2-mysql
+    - python3-pymysql
+    - libapache2-mod-xsendfile
+    state: present
+    update_cache: yes
+
+- name: Enable extra PHP extensions
+  shell: "phpenmod {{ item }}"
+  args:
+    creates: "/etc/php/8.2/apache2/conf.d/20-{{ item }}.ini"
+  loop:
+    - gd
+    - mysqli
+  notify: reload apache
+
+- name: Add Apache config for pecl.php.net
+  template:
+    src: templates/pecl.php.net.conf
+    dest: "/etc/apache2/sites-available/{{ pecl_config_file }}"
+  notify: reload apache
+
+- name: Enable config file
+  shell: "a2ensite {{ pecl_config_file }}"
+  args:
+    creates: "/etc/apache2/sites-enabled/{{ pecl_config_file }}"
+  notify: reload apache
+
+- name: Ensure Apache is started and enabled
+  service:
+    name: apache2
+    state: started
+    enabled: yes
+
+- include_tasks: deploy.yml
+
+# Backup 
+- name: Run backup tasks
+  include_role:
+    name: backup_property
+  vars:
+    property: pecl
+    backup_paths: [ "{{ pecl_box_dir }}" ]
+
+# This can be run when backup data is run at least once and available for restore
+# The restore role should be skipped when initializing the property for the first time with --extra-vars "first_run=true"
+- name: Run restore tasks
+  include_role:
+    name: restore_property
+  vars:
+    property: pecl
+    backup_paths: [ "{{ pecl_box_dir }}" ]
+  when: restore_data is defined and restore_data

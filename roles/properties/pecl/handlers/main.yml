@@ -1,0 +1,23 @@
+# This restarts the Apache service
+- name: restart apache
+  service:
+    name: apache2
+    state: restarted
+
+# This reloads the Apache service
+- name: reload apache
+  service:
+    name: apache2
+    state: reloaded
+
+# This restarts the MariaDB service
+- name: restart mariadb
+  service:
+    name: mariadb
+    state: restarted
+
+# This reloads the MariaDB service
+- name: reload mariadb
+  service:
+    name: mariadb
+    state: reloaded

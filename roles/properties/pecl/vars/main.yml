@@ -1,0 +1,14 @@
+pecl_docroot: /var/www/sites
+pecl_config_file: pecl.php.net.conf
+
+pecl_username: pecl
+pecl_password: pecl
+pecl_database: peclweb
+pecl_dsn: mysqli://{{ pecl_username }}:{{ pecl_password }}@127.0.0.1/{{ pecl_database }}
+
+pecl_box_dir: /local/this-box
+pecl_packages_dir: /local/this-box/packages
+pecl_rest_dir: /local/this-box/rest
+pecl_tmp_dir: /local/this-box/tmp
+pecl_uploads_dir: /local/this-box/uploads
+

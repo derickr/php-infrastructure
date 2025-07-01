@@ -1,0 +1,28 @@
+# Run this playbook to set up your downloads machine
+# ansible-playbook initServiceDownloads.yml
+
+- hosts:
+  - pecl
+
+  become: yes
+  become_user: root
+
+  pre_tasks:
+    - name: Install common software and configuration
+      include_role:
+        name: install_common_software
+
+    - name: Install Apache and common modules
+      include_role:
+        name: add_apache_with_modules
+
+    - name: Install MariaDB
+      include_role:
+        name: install_mariadb
+
+    - name: Install Composer
+      include_role:
+        name: install_composer
+
+  roles:
+    - role: properties/pecl

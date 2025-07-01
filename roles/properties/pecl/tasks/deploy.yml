@@ -1,0 +1,64 @@
+- name: Create local directory to store peclweb content
+  file:
+    state: directory
+    dest: "{{ pecl_docroot }}/{{ pecl_domain }}"
+    mode: "755"
+
+- name: Create local 'parent' directory to store information
+  file:
+    state: directory
+    dest: "{{ item }}"
+    mode: "755"
+  loop:
+    - "{{ pecl_box_dir }}"
+
+- name: Create local directories to store information
+  file:
+    state: directory
+    dest: "{{ item }}"
+    mode: "755"
+    owner: "www-data"
+  loop:
+    - "{{ pecl_packages_dir }}"
+    - "{{ pecl_rest_dir }}"
+    - "{{ pecl_tmp_dir }}"
+    - "{{ pecl_uploads_dir }}"
+
+- name: Create symlink from public_html to rest dir
+  file:
+    state: link
+    src: "{{ pecl_rest_dir }}"
+    dest: "{{ pecl_docroot }}/{{ pecl_domain }}/public_html/rest"
+
+- name: Create symlink from public_html to packages dir
+  file:
+    state: link
+    src: "{{ pecl_packages_dir }}"
+    dest: "{{ pecl_docroot }}/{{ pecl_domain }}/public_html/packages"
+
+- name: Create database
+  community.mysql.mysql_db:
+    name: peclweb
+    encoding: latin1
+    state: present
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+
+- name: Create database user
+  community.mysql.mysql_user:
+    name: "{{ pecl_username }}"
+    password: "{{ pecl_password }}"
+    priv: "{{ pecl_database }}.*:ALL"
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+
+- name: Copy update-pecl script to the server
+  template:
+    src: templates/update-pecl
+    dest: /local/systems/update-pecl
+    mode: "700"
+
+- name: Create a cron job to run hourly
+  cron:
+    name: Run update-pecl hourly
+    special_time: hourly
+    job: /local/systems/update-pecl
+

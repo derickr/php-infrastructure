@@ -21,6 +21,7 @@
   args:
     creates: /etc/apache2/mods-enabled/{{ item }}.load
   loop:
+    - env
     - ssl
     - php8.2
     - headers
