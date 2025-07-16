@@ -1,64 +1,32 @@
-# Run this playbook to initialise your machines: The jumphosts, the rsync machine and all services.
-# It sets up the firewall, disables root login, creates admin users, puts their ssh keys to the machines.
-# It installs GA and the Google Authenticator file to the jumphosts.
+# Run this playbook to initialise the service machines
+#
+# It disables root login, creates admin users, and puts their ssh keys to the machines.
+# You can only run this *once*, because afterwards the root user can't be used to login.
+#
+# In order to contact a droplet directly as root, you must also disable the SSH proxy
+# for a host in your .ssh/config file, like:
+#
+# #Host service3-ams.internal.php.net
+# #    ProxyCommand none
+#
+# And also comment out the [ssh_connection] section in ansible.cfg (see the
+# comment there)
 
 # Example run:
-# ansible-playbook initialize.yml --extra-vars "@/path/to/admins.yml"
-# ansible-playbook initialize.yml --extra-vars "@/home/jacoba/dev/stf-php-ansible/etc/admins.yml"
-
-
-# Set up firewall on all services and the rsync
-- hosts:
-  - service
-  - rsync
-
-  become: yes
-  become_user: root
-
-  tasks:
-  - name: Gather facts for all jumphosts
-    setup:
-      gather_subset:
-        - default_ipv4
-    delegate_to: "{{ item }}"
-    delegate_facts: true
-    loop: "{{ groups['jumphost'] }}"
+# ansible-playbook initialize.yml --extra-vars "@etc/admins.yml"
 
 - hosts:
   - service
-  - rsync
 
   remote_user: root
 
   tasks:
-  - name: Install ufw and rsync
+  - name: Install rsync
     apt:
       name:
-      - ufw
       - rsync
       state: present
       update_cache: yes
-
-  # Add UFW firewall configuration so that the services are only accessible through the public ip of the jumphosts
-  - name: Allow ssh only from jumphost
-    ufw:
-      rule: allow
-      from_ip: "{{ hostvars[item].ansible_default_ipv4.address }}"
-      port: 22
-    loop: "{{ groups['jumphost'] }}"
-
-  - name: Allow incoming requests from port 80 and 443
-    ufw:
-      rule: allow
-      port: "{{ item }}"
-    loop:
-      - 80
-      - 443
-
-  - name: Enable UFW and deny incoming requests
-    ufw:
-      state: enabled
-      policy: deny
 
   - name: Create local directory
     file:
@@ -66,20 +34,12 @@
       dest: /local
       mode: "755"
 
-  # This is the place for all the scripts
   - name: Create local systems directory
     file:
       state: directory
       dest: /local/systems
       mode: "755"
 
-
-- hosts:
-  - service
-
-  remote_user: root
-
-  tasks:
   # Install Restic for all services as backup tool https://restic.net/
   - name: Install Restic
     package:
@@ -87,41 +47,7 @@
       state: present
       update_cache: yes
 
-
-- hosts:
-  - rsync
-
-  remote_user: root
-
-  tasks:
-  - name: Gather facts for all services
-    setup:
-      gather_subset:
-        - default_ipv4
-    delegate_to: "{{ item }}"
-    delegate_facts: true
-    loop: "{{ groups['service'] }}"
-
-  - name: Allow incoming rsync requests from services
-    ufw:
-      rule: allow
-      from_ip: "{{ hostvars[item].ansible_default_ipv4.address }}"
-      port: 873
-      proto: tcp
-    loop: "{{ groups['service'] }}"
-
-  - name: Reload UFW and deny incoming requests
-    ufw:
-      state: reloaded
-
-
-# Add admin user and pubkey everywhere
-- hosts:
-  - all
-
-  remote_user: root
-
-  tasks:
+  # Add admin user and pubkey everywhere
   - name: Create a linux user and add it to sudo group
     user:
       name: "{{ item.name }}"
@@ -146,32 +72,6 @@
       username: "{{ item.name }}"
       pubkeys: "{{ item.pubkeys }}"
 
-
-# Install Google Authenticator and copy GA file on jumphosts
-- hosts:
-  - jumphost
-
-  remote_user: root
-
-  tasks:
-    - name: Copy admin's Google Authenticator files
-      loop: "{{ admins }}"
-      include_role:
-        name: add_GA_file
-      vars:
-        username: "{{ item.name }}"
-        path_to_google_auth: "{{ item.GA_file }}"
-
-  roles:
-    - role: install_GA
-
-# Disable root login at the very end
-- hosts:
-  - all
-
-  remote_user: root
-
-  tasks:
   - name: Disable root login
     lineinfile:
       path: /etc/ssh/sshd_config
