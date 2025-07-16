@@ -13,7 +13,29 @@ export AWS_ACCESS_KEY_ID="{{ DO_access_key }}"
 export AWS_SECRET_ACCESS_KEY="{{ DO_secret_key }}"
 export RESTIC_PASSWORD="{{ restic_password }}"
 
-# Do backups
+# Do backups of databases (assume that root can always read them)
+{% for backup_db in backup_dbs %}
+
+    # Backup database {{ backup_db }}
+    mysqldump -u root "{{ backup_db }}" > "/local/{{ backup_db }}.sql"
+
+    restic -r s3:{{ DO_bucket_url }}/{{ DO_bucket_name }}/{{ property }} backup "/local/{{ backup_db }}.sql"
+    exit_status=$?
+    echo "restic status: " $exit_status
+
+    if [ $exit_status -eq 0 ]; then
+      echo "[$(date)] restic upload completed."
+
+    else
+      echo "[$(date)] Could not upload data."
+    fi
+
+    # Removing temporary data
+    rm "/local/{{ backup_db }}.sql"
+
+{% endfor %}
+
+# Do backups of directories
 {% for backup_path in backup_paths %}
 
     # Backup path {{ backup_path }}
@@ -22,7 +44,7 @@ export RESTIC_PASSWORD="{{ restic_password }}"
     echo "restic status: " $exit_status
 
     if [ $exit_status -eq 0 ]; then
-      echo "[$(date)] S3 upload completed."
+      echo "[$(date)] restic upload completed."
 
     else
       echo "[$(date)] Could not upload data."
