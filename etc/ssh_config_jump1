@@ -7,7 +7,7 @@ Host jump-ams-1.internal.php.net jump-sfo-1.internal.php.net
     AddKeysToAgent   no
     ForwardAgent    yes
     ControlMaster  auto
-    ControlPersist   4h
+    ControlPersist   5d
     ControlPath    ~/.ssh/cp-socket-%C
 
 Host *.internal.php.net
