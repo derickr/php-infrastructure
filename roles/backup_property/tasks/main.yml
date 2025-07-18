@@ -48,7 +48,7 @@
 
 - name: Create daily property backup
   cron:
-    name: Daily property backup
+    name: "Daily property backup for {{ property }}"
     job: "/local/systems/backup-{{ property }}"
     special_time: daily
     state: present
