@@ -1,0 +1,63 @@
+- name: Create local directory to store bugs content
+  file:
+    state: directory
+    dest: "{{ bugs_docroot }}/{{ bugs_domain }}"
+    mode: "755"
+
+- name: Create local 'parent' directory to store information
+  file:
+    state: directory
+    dest: "{{ item }}"
+    mode: "755"
+    owner: "www-data"
+  loop:
+    - "{{ bugs_box_dir }}"
+
+- name: Create local directories to store information
+  file:
+    state: directory
+    dest: "{{ item }}"
+    mode: "755"
+    owner: "www-data"
+  loop:
+    - "{{ bugs_patches_dir }}"
+    - "{{ bugs_docroot }}/{{ bugs_domain }}/www"
+    - "{{ bugs_docroot }}/{{ bugs_domain }}/www/uploads"
+
+- name: Install bugsweb local config file
+  template:
+    src: templates/local_config.php
+    dest: "{{ bugs_docroot }}/{{ bugs_domain }}/local_config.php"
+
+- name: Create symlink from public_html to uploads/patches dir
+  file:
+    state: link
+    src: "{{ bugs_patches_dir }}"
+    dest: "{{ bugs_docroot }}/{{ bugs_domain }}/www/uploads/patches"
+
+- name: Create database
+  community.mysql.mysql_db:
+    name: "{{ bugs_database }}"
+    encoding: utf8mb4
+    state: present
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+
+- name: Create database user
+  community.mysql.mysql_user:
+    name: "{{ bugs_username }}"
+    password: "{{ bugs_password }}"
+    priv: "{{ bugs_database }}.*:ALL"
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+
+- name: Copy update-bugs script to the server
+  template:
+    src: templates/update-bugs
+    dest: /local/systems/update-bugs
+    mode: "700"
+
+- name: Create a cron job to run hourly
+  cron:
+    name: Run update-bugs hourly
+    special_time: hourly
+    job: /local/systems/update-bugs
+

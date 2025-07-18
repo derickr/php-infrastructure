@@ -1,0 +1,10 @@
+bugs_docroot: /var/www/sites
+bugs_config_file: bugs.php.net.conf
+
+bugs_username: bugsweb
+bugs_password: "this will change"
+bugs_database: phpbugsdb
+
+bugs_box_dir: /local/this-box/bugs
+bugs_patches_dir: "{{ bugs_box_dir }}/uploads/patches/"
+

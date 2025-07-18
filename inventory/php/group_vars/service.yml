@@ -29,6 +29,9 @@ talks_domain_alias: talks.internal.php.net
 pecl_domain: pecl.php.net
 pecl_domain_alias: pecl.internal.php.net
 
+bugs_domain: bugs.php.net
+bugs_domain_alias: bugs.internal.php.net
+
 main_domain: main.internal.php.net
 main_domain_alias: master.internal.php.net
 lxr_domain: lxr.internal.php.net

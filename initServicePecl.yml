@@ -25,4 +25,5 @@
         name: install_composer
 
   roles:
+    - role: properties/bugs
     - role: properties/pecl
