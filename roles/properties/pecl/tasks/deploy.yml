@@ -9,6 +9,7 @@
     state: directory
     dest: "{{ item }}"
     mode: "755"
+    owner: "www-data"
   loop:
     - "{{ pecl_box_dir }}"
 
