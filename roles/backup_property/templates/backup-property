@@ -14,6 +14,7 @@ export AWS_SECRET_ACCESS_KEY="{{ DO_secret_key }}"
 export RESTIC_PASSWORD="{{ restic_password }}"
 
 # Do backups of databases (assume that root can always read them)
+{% if backup_dbs is defined() %}
 {% for backup_db in backup_dbs %}
 
     # Backup database {{ backup_db }}
@@ -34,6 +35,7 @@ export RESTIC_PASSWORD="{{ restic_password }}"
     rm "/local/{{ backup_db }}.sql"
 
 {% endfor %}
+{% endif %}
 
 # Do backups of directories
 {% for backup_path in backup_paths %}
