@@ -1,0 +1,10 @@
+# Re-Publish new DNS file
+
+- hosts:
+  - pecl
+
+  become: yes
+  become_user: root
+
+  roles:
+    - role: update_dns

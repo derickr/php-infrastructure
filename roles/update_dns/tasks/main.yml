@@ -1,0 +1,35 @@
+- name: Install Software
+  apt:
+    name:
+    - bind9
+    - bind9-utils
+    state: present
+    update_cache: yes
+
+- name: Add named.conf config files
+  template:
+    src: templates/{{ item }}
+    dest: /etc/bind/{{ item }}
+    mode: "644"
+    group: bind
+  loop:
+    - named.conf.options
+    - named.conf.local
+
+- name: Update php.net.zone
+  template:
+    src: inventory/php.net.zone
+    dest: /local/systems/php.net.zone
+    mode: "700"
+
+- name: Update main scripts to the server
+  template:
+    src: templates/{{ item }}
+    dest: /local/systems/{{ item }}
+    mode: "700"
+  loop:
+    - maintain-master-dns.php
+    - process-main-zone-file
+
+- name: Reload zone file
+  shell: /local/systems/process-main-zone-file

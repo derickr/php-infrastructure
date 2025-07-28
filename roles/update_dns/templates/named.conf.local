@@ -1,0 +1,19 @@
+zone "php.net" {
+        type master;
+
+        notify yes;
+
+        allow-transfer {
+{% for dns_host in easy_dns_hosts %}
+                {{ dns_host }}/32;
+{% endfor %}
+        };
+
+        also-notify {
+{% for dns_host in easy_dns_hosts %}
+                {{ dns_host }};
+{% endfor %}
+        };
+
+        file "{{ bind_php_net_zone_file }}";
+};

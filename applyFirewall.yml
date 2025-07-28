@@ -77,6 +77,21 @@
     loop: "{{ pecl_hosts }}"
 
 - hosts:
+  - pecl
+
+  become: yes
+  become_user: root
+
+  tasks:
+  - name: Allow access TCP port 53 from EasyDNS transfer machine
+    ufw:
+      rule: allow
+      port: 53
+      proto: tcp
+      src: "{{ item }}"
+    loop: "{{ easy_dns_hosts }}"
+
+- hosts:
   - service
 
   become: yes
