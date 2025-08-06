@@ -35,15 +35,11 @@ pecl_domain_alias: pecl.internal.php.net
 bugs_domain: bugs.php.net
 bugs_domain_alias: bugs.internal.php.net
 
-main_domain: main.internal.php.net
-main_domain_alias: master.internal.php.net
-lxr_domain: lxr.internal.php.net
-status_domain: status.internal.php.net
-gcov_domain: gcov.internal.php.net
+main_domain: main.php.net
+main_domain_alias: main.internal.php.net
 
-# systems_email: systems@php.net and master_email: webmaster@php.net
 systems_email: systems@php.net
-master_email: webmaster@php.net
+master_email: "{{ systems_email }}"
 
 # Non property configuration
 bind_php_net_zone_file: /etc/bind/db.php.net

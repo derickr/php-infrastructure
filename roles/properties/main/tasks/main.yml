@@ -1,41 +1,32 @@
-- name: Install Apache with mod-php, php, cli-php and mariaDB
+# This role sets up the property main.php.net with Apache together with the php module
+# It uses self-signed SSL certs
+
+- name: Install Software
   apt:
     name:
-      - apache2
-      - libapache2-mod-php8.2
-      - php8.2
-      - php8.2-cli
-      - mariadb-server
+    - php-pear
+    - php8.2-gd
+    - php8.2-mysql
+    - python3-pymysql
+    - bind9
+    - bind9-utils
+    - bind9-dnsutils
     state: present
     update_cache: yes
 
-- name: create local box
-  file:
-    state: directory
-    dest: "{{ main_box }}"
-    mode: "755"
-
-- name: Store secrets file
-  template:
-    src: templates/secrets.conf
-    dest: "{{ main_box }}/apache.conf"
-    mode: "600"
-    owner: www-data
-    group: www-data
+- name: Enable extra PHP extensions
+  shell: "phpenmod {{ item }}"
+  args:
+    creates: "/etc/php/8.2/apache2/conf.d/20-{{ item }}.ini"
+  loop:
+    - gd
+    - mysqli
+  notify: reload apache
 
 - name: Add Apache config for main.php.net
   template:
     src: templates/main.php.net.conf
     dest: "/etc/apache2/sites-available/{{ main_config_file }}"
-  notify: reload apache
-
-- name: Enable Apache modules
-  command: a2enmod {{ item }}
-  args:
-    creates: /etc/apache2/mods-enabled/{{ item }}.load
-  loop:
-    - rewrite
-    - php8.2
   notify: reload apache
 
 - name: Enable config file
@@ -50,23 +41,23 @@
     state: started
     enabled: yes
 
-- name: Set mysql root password
-  command: mysqladmin -u root password "{{ db_root_password }}"
-
-- name: Create MariaDB database
-  command: mysql -u root -p{{ db_root_password }} -e "CREATE DATABASE IF NOT EXISTS {{ db_name }}"
-  args:
-    creates: "/var/lib/mysql/{{ db_name }}"
-
-- name: Create MySQL user 'nobody' if not exists
-  command: mysql -u root -p{{ db_root_password }} -e "CREATE USER IF NOT EXISTS 'nobody'@'localhost' IDENTIFIED BY '';"
-
-- name: Grant privileges to 'nobody' for the specified database
-  command: mysql -u root -p{{ db_root_password }} -e "GRANT SELECT, LOCK TABLES ON {{ db_name }}.* TO 'nobody'@'localhost'; FLUSH PRIVILEGES;"
-
 - include_tasks: deploy.yml
+
+# Backup
+- name: Run backup tasks
+  include_role:
+    name: backup_property
+  vars:
+    property: main
+    backup_paths: [ ]
+    backup_dbs: [ "{{ main_db_database }}" ]
+
 # This can be run when backup data is run at least once and available for restore
 # The restore role should be skipped when initializing the property for the first time with --extra-vars "first_run=true"
-- include_tasks: restore.yml
-  when: first_run is not defined or not first_run
-- include_tasks: backup.yml
+#- name: Run restore tasks
+#  include_role:
+#    name: restore_property
+#  vars:
+#    property: main
+#    backup_paths: [ "{{ main_box_dir }}" ]
+#  when: restore_data is defined and restore_data

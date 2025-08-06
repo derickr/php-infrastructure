@@ -38,6 +38,7 @@ export RESTIC_PASSWORD="{{ restic_password }}"
 {% endif %}
 
 # Do backups of directories
+{% if backup_paths is defined() %}
 {% for backup_path in backup_paths %}
 
     # Backup path {{ backup_path }}
@@ -53,6 +54,7 @@ export RESTIC_PASSWORD="{{ restic_password }}"
     fi
 
 {% endfor %}
+{% endif %}
 
 echo "[$(date)] Pruning old backups."
 

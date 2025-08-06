@@ -4,24 +4,57 @@
     state: present
     update_cache: yes
 
+- name: Create local 'parent' directory to store information
+  file:
+    state: directory
+    dest: "{{ item }}"
+    mode: "755"
+    owner: "www-data"
+  loop:
+    - "{{ main_box_dir }}"
+
 - name: Create local directory to store php-main-web
   file:
     state: directory
-    dest: /local/mirrors/php-main-web/public/fetch
+    dest: "{{ main_docroot }}/{{ main_domain }}/public/fetch"
     mode: "755"
     group: www-data
     owner: www-data
     recurse: yes
 
-- name: Add php.net.zone
-  template:
-    src: templates/php.net.zone
-    dest: "{{ item }}"
-    mode: "700"
-  loop:
-    - /local/systems/php.net.zone
-    - /local/mirrors/php-main-web/public/fetch/php.net.zone
+- name: Create symlink to zone file for fetching through web
+  file:
+    state: link
+    src: "{{ bind_php_net_zone_file }}"
+    dest: "{{ main_docroot }}/{{ main_domain }}/public/fetch/php.net.zone"
+    force: yes
 
+# Database Elements
+- name: Create database
+  community.mysql.mysql_db:
+    name: "{{ main_db_database }}"
+    state: present
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+
+- name: Create database user
+  community.mysql.mysql_user:
+    name: "{{ main_db_username }}"
+    password: "{{ main_db_password }}"
+    priv: "{{ main_db_database }}.*:ALL"
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+
+- name: Create read only user for email
+  community.mysql.mysql_user:
+    name: "nobody"
+    priv: "{{ main_db_database }}.*:SELECT,DELETE"
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+
+# Exim configuration
+- name: Configure smart host for exim
+  include_role:
+    name: smtp_smarthost
+
+# Scripts and Cron Jobs
 - name: Add main scripts to the server
   template:
     src: templates/{{ item }}
@@ -29,22 +62,21 @@
     mode: "700"
   loop:
     - maintain-main
-    - maintain-master-dns.php
-    - process-main-zone-file
+    - maintain-main-weekly
 
 - name: Fetch main content
   command: /local/systems/maintain-main
 
 # Cron jobs for maintain-main
-- name: Create a cron job to run maintain-main hourly
+- name: Create a cron job to run maintain-main
   cron:
     name: Run maintain-main hourly
     special_time: hourly
     job: /local/systems/maintain-main
 
-- name: Create a cron job to run maintain-main weekly
+- name: Create a cron job to run maintain-main-weekly
   cron:
     name: Run maintain-main weekly
     special_time: weekly
-    job: /local/systems/maintain-main
+    job: /local/systems/maintain-main-weekly
 

@@ -1,22 +1,3 @@
 #!/bin/sh
-# $Id$
-# Do whatever we need to do to run the "main" facilities
 
-# Commenting out update-systems as this is moved to Ansible task
-# /local/systems/update-systems
-rsync -qavzC --timeout=600 --delete --delete-after --filter='P github-config.php' {{rsync_domain}}::php-main-web {{main_docroot}}
-
-#php -r '
-#$token=rtrim(file_get_contents("/local/this-box/CVSPASSTOKEN"));
-#include "/local/mirrors/php-main-web/fetch/cvspasswd.php";
-#' > /repository/CVSROOT/passwd
-
-#/usr/local/bin/php /local/mirrors/php-main-web/scripts/mirror-test
-
-/local/systems/process-main-zone-file
-
-if test "$how" = "weekly" ; then
-	php /local/mirrors/php-main-web/scripts/email-note-summaries
-	php /local/mirrors/php-main-web/scripts/event-weekly-email
-	php /local/mirrors/php-main-web/scripts/remove-low-rated-notes
-fi
+rsync -azC --timeout=600 --delete --delete-after --filter='P php.net.zone' {{rsync_domain}}::php-main-web {{ main_docroot }}/{{ main_domain }}

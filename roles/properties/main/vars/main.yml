@@ -1,11 +1,8 @@
+main_docroot: /var/www/sites
 main_config_file: main.php.net.conf
 
-main_docroot: /local/mirrors/php-main-web
-main_box: /local/this-box
+main_db_username: mainuser
+main_db_password: mainpw
+main_db_database: phpmasterdb
 
-db_name: phpmasterdb
-
-backup_dir: /local/backups
-backup_name: "main-{{ ansible_date_time.date }}"
-
-restore_dir: /local/restore
+main_box_dir: /local/this-box/main
