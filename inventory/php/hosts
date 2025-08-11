@@ -6,11 +6,10 @@ jumphost1 ansible_host=jump-sfo-1.internal.php.net
 #rsync0 ansible_host=rsync0.ams3.do.php.backend.lol
 
 [service:children]
+museum
 wiki
 downloads
-museum
 pecl
-#main
 
 [museum]
 service0 ansible_host=service0-ams.internal.php.net
@@ -23,6 +22,3 @@ service2 ansible_host=service2-ams.internal.php.net
 
 [pecl]
 service3 ansible_host=service3-ams.internal.php.net
-
-#[main]
-#service3 ansible_host=service3.ams3.do.php.backend.lol
