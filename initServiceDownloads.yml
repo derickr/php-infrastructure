@@ -22,6 +22,7 @@
 
   roles:
     - role: properties/downloads
+    - role: properties/gtk
     - role: properties/qa
     - role: properties/shared
     - role: properties/talks

@@ -1,0 +1,18 @@
+- name: Create local directory to store gtk content
+  file:
+    state: directory
+    dest: "{{ talks_docroot }}/{{ talks_domain }}"
+    mode: "755"
+
+- name: Copy update-gtk script to the server
+  template:
+    src: templates/update-gtk
+    dest: /local/systems/update-gtk
+    mode: "700"
+
+- name: Create a cron job to run hourly
+  cron:
+    name: Run update-gtk hourly
+    special_time: hourly
+    job: /local/systems/update-gtk
+

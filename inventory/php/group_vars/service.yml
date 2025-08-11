@@ -38,6 +38,9 @@ bugs_domain_alias: bugs.internal.php.net
 main_domain: main.php.net
 main_domain_alias: main.internal.php.net
 
+gtk_domain: gtk.php.net
+gtk_domain_alias: gtk.internal.php.net
+
 systems_email: systems@php.net
 master_email: "{{ systems_email }}"
 

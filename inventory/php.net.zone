@@ -213,6 +213,9 @@ shared.internal       IN CNAME service2-ams.internal.php.net.
 qa.internal           IN CNAME service2-ams.internal.php.net.
 talks.internal        IN CNAME service2-ams.internal.php.net.
 
+; Abandoned
+gtk.internal          IN CNAME service2-ams.internal.php.net.
+
 ; Deprecated
 conf.internal         IN CNAME service2-ams.internal.php.net.
 conf2.internal        IN CNAME service2-ams.internal.php.net.

@@ -1,0 +1,2 @@
+gtk_docroot: /var/www/sites/gtk.php.net
+gtk_config_file: gtk.php.net.conf
