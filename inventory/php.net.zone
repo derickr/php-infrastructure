@@ -54,10 +54,10 @@ lists-origin		IN CNAME lists.php.net.
 
 ; main holds backend systems for user notes, @php.net user management
 ; main-origin is name of host, see Digital Ocean section
-main			IN CNAME main-origin.php.net.
+main			IN CNAME main-php-net.ax4z.com.
 ; these two names can probably be retired
-mail 			IN CNAME main.php.net.
-master			IN CNAME main.php.net.
+;mail 			IN CNAME main.php.net.
+;master			IN CNAME main.php.net.
 
 ; monitoring host for the php.net infrastructure
 monitoring-origin	IN CNAME bk2.php.net.
