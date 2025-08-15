@@ -1,0 +1,18 @@
+- name: Create local directory to store people content
+  file:
+    state: directory
+    dest: "{{ people_docroot }}/{{ people_domain }}"
+    mode: "755"
+
+- name: Copy update-people script to the server
+  template:
+    src: templates/update-people
+    dest: /local/systems/update-people
+    mode: "700"
+
+- name: Create a cron job to run hourly
+  cron:
+    name: Run update-people hourly
+    special_time: hourly
+    job: /local/systems/update-people
+

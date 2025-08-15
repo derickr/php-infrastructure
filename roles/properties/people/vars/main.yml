@@ -1,0 +1,2 @@
+people_docroot: /var/www/sites
+people_config_file: people.php.net.conf
