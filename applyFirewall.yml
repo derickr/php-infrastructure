@@ -91,6 +91,43 @@
       src: "{{ item }}"
     loop: "{{ easy_dns_hosts }}"
 
+# Import GitHub APIs for hooks, so that we open up webhooks to main.internal.php.net
+- hosts:
+  - pecl
+
+  become: yes
+  become_user: root
+
+  gather_facts: false
+
+  tasks:
+
+    - name: Query GitHub Meta API
+      uri:
+        url: https://api.github.com/meta
+        return_content: true
+      register: json_data
+
+    - name: Set Backup IPs for Hooks
+      set_fact:
+        json_data:
+          json:
+            hooks:
+            - "140.82.112.0/20"
+      when: json_data is defined and json_data.skipped is defined and json_data.skipped == true
+
+    - name: Transform JSON to formatted list
+      set_fact:
+        formatted_list: "{{ json_data.json.hooks }}"
+
+    - name: Allow access to TCP port 443 from GitHub hooks IPs
+      ufw:
+        rule: allow
+        port: 443
+        proto: tcp
+        src: "{{ item }}"
+      loop: "{{ formatted_list }}"
+
 - hosts:
   - service
 
