@@ -44,6 +44,9 @@ gtk_domain_alias: gtk.internal.php.net
 people_domain: people.php.net
 people_domain_alias: people.internal.php.net
 
+doc_domain: doc.php.net
+doc_domain_alias: doc.internal.php.net
+
 systems_email: systems@php.net
 master_email: "{{ systems_email }}"
 

@@ -33,7 +33,6 @@ analytics		IN CNAME analytics-origin.php.net.
 bugs			IN CNAME bugs-php-net.ax4z.com.
 
 ; doc.php.net, managing the documentation project
-doc-origin		IN CNAME svn2.php.net.
 doc			IN CNAME doc-php-net.ax4z.com.
 
 ; downloads -- used by release managers for QA builds and windows downloads
@@ -208,6 +207,7 @@ service1-ams.internal IN A 165.22.201.73
 wiki.internal         IN CNAME service1-ams.internal.php.net.
 
 service2-ams.internal IN A 206.189.2.9
+doc.internal          IN CNAME service2-ams.internal.php.net.
 downloads.internal    IN CNAME service2-ams.internal.php.net.
 shared.internal       IN CNAME service2-ams.internal.php.net.
 qa.internal           IN CNAME service2-ams.internal.php.net.

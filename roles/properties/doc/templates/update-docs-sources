@@ -1,0 +1,35 @@
+#!/bin/sh
+set -e
+
+mkdir -p "{{ doc_sources_dir }}"
+cd "{{ doc_sources_dir }}"
+
+# We rely on include/languages.inc from the web-php repo to know what
+# languages we want to keep track of
+rsync rsync.php.net::phpweb/include/languages.inc .
+
+langs=`/usr/bin/php -r 'include "languages.inc"; echo implode( " ", array_keys( $LANGUAGES ) );'`;
+langs="base $langs"
+
+if [ -d "{{ doc_phd_source_dir }}/.git" ]; then
+	cd "{{ doc_phd_source_dir }}"
+	echo -n "updating phd: "
+	git fetch origin && git reset --hard origin/master
+else
+	cd "{{ doc_sources_dir }}"
+	echo -n "cloning phd: "
+	git clone https://github.com/php/phd.git phd
+    fi
+
+for lang in $langs; do
+    cd "{{ doc_lang_sources_dir }}"
+    lang=$(echo ${lang} | tr '[:upper:]' '[:lower:]')
+    if [ -d ${lang} ]; then
+        cd ${lang}
+        echo -n "updating ${lang}: "
+        git fetch origin && git reset --hard origin/master
+    else
+        echo -n "cloning ${lang}: "
+        git clone https://github.com/php/doc-${lang}.git ${lang}
+    fi
+done

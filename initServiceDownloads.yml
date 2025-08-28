@@ -21,6 +21,7 @@
         name: install_composer
 
   roles:
+    - role: properties/doc
     - role: properties/downloads
     - role: properties/gtk
     - role: properties/people

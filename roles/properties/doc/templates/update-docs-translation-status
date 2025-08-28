@@ -1,0 +1,18 @@
+#!/bin/sh
+set -e
+
+cd "{{ doc_sources_dir }}"
+
+langs=`/usr/bin/php -r 'include "languages.inc"; echo implode( " ", array_keys( $LANGUAGES ) );'`;
+langs=$(echo ${langs} | tr 'A-Z' 'a-z')
+
+export SQLITE_DIR="{{ doc_sqlite_dir }}"
+
+mkdir -p ${SQLITE_DIR}
+
+cd "{{ doc_lang_sources_dir }}"
+
+echo "Generating PHP database"
+php -q base/scripts/translation/genrevdb.php ${SQLITE_DIR}/status.sqlite.tmp ${langs}
+mv ${SQLITE_DIR}/status.sqlite.tmp ${SQLITE_DIR}/status.sqlite
+echo "... done."

@@ -1,0 +1,10 @@
+doc_docroot: /var/www/sites
+doc_config_file: doc.php.net.conf
+
+doc_box_dir: /local/this-box/doc
+
+doc_sqlite_dir: "{{ doc_docroot }}/{{ doc_domain }}/www/sqlite"
+
+doc_sources_dir: "{{ doc_box_dir }}/src"
+doc_lang_sources_dir: "{{ doc_sources_dir }}/phpdoc/langs"
+doc_phd_source_dir: "{{ doc_sources_dir}}/phd"

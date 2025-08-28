@@ -1,0 +1,40 @@
+# This role sets up the property doc.php.net with Apache together with the php module
+# It uses self-signed SSL certs
+
+- name: Install Software
+  apt:
+    name:
+    - git
+    - php8.2-gd
+    - php8.2-sqlite3
+    state: present
+    update_cache: yes
+
+- name: Enable extra PHP extensions
+  shell: "phpenmod {{ item }}"
+  args:
+    creates: "/etc/php/8.2/apache2/conf.d/20-{{ item }}.ini"
+  loop:
+    - gd
+    - sqlite3
+  notify: reload apache
+
+- name: Add Apache config for doc.php.net
+  template:
+    src: "templates/{{ doc_config_file }}"
+    dest: "/etc/apache2/sites-available/{{ doc_config_file }}"
+  notify: reload apache
+
+- name: Enable config file
+  shell: "a2ensite {{ doc_config_file }}"
+  args:
+    creates: "/etc/apache2/sites-enabled/{{ doc_config_file }}"
+  notify: reload apache
+
+- name: Ensure Apache is started and enabled
+  service:
+    name: apache2
+    state: started
+    enabled: yes
+
+- include_tasks: deploy.yml

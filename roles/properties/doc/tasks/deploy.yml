@@ -1,0 +1,50 @@
+- name: Create local directory to store doc content
+  file:
+    state: directory
+    dest: "{{ doc_docroot }}/{{ doc_domain }}"
+    mode: "755"
+
+- name: Create local 'parent' directory to store information
+  file:
+    state: directory
+    dest: "{{ item }}"
+    mode: "755"
+    owner: "root"
+  loop:
+    - "{{ doc_box_dir }}"
+    - "{{ doc_sources_dir }}"
+    - "{{ doc_lang_sources_dir }}"
+    - "{{ doc_phd_source_dir }}"
+
+- name: Create local directories in web root to store information
+  file:
+    state: directory
+    dest: "{{ item }}"
+    mode: "755"
+    owner: "www-data"
+  loop:
+    - "{{ doc_sqlite_dir }}"
+
+# Scripts and Cron Jobs
+- name: Add doc scripts to the server
+  template:
+    src: templates/{{ item }}
+    dest: /local/systems/{{ item }}
+    mode: "700"
+  loop:
+    - install-docweb-jpgraph
+    - update-doc
+    - update-docs-sources
+    - update-docs-translation-status
+    - update-phd-docs
+
+- name: Create a cron job to run hourly
+  cron:
+    name: Run update-doc hourly
+    special_time: hourly
+    job: /local/systems/update-doc
+
+- name: Install JPGraph
+  shell: /local/systems/install-docweb-jpgraph
+  args:
+    creates: "{{ doc_docroot }}/{{ doc_domain }}/include/jpgraph/VERSION"
