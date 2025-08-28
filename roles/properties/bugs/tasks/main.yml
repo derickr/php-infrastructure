@@ -21,7 +21,7 @@
 
 - name: Add Apache config for bugs.php.net
   template:
-    src: templates/bugs.php.net.conf
+    src: "templates/{{ bugs_config_file }}"
     dest: "/etc/apache2/sites-available/{{ bugs_config_file }}"
   notify: reload apache
 
