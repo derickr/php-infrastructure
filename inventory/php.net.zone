@@ -39,7 +39,6 @@ doc			IN CNAME doc-php-net.ax4z.com.
 downloads		IN CNAME downloads-php-net.ax4z.com.
 
 ; gtk project is abandoned, but old site lives on
-gtk-origin		IN CNAME svn2.php.net.
 gtk			IN CNAME gtk-php-net.ax4z.com.
 
 ; Jump boxes for login to .php.net servers
@@ -81,7 +80,6 @@ download.pear        IN CNAME euk3.php.net.
 pecl			IN CNAME pecl-php-net.ax4z.com.
 
 ; people.php.net user directory
-people-origin		IN CNAME svn2.php.net.
 people			IN CNAME people-php-net.ax4z.com.
 
 ; old qa.php.net website, which besides robots.txt now redirects to other locations (only)
@@ -170,9 +168,6 @@ php-jump2		IN AAAA 2a01:4f8:c2c:3b3f::1
 
 php-jump4		IN A 45.112.84.7
 php-jump4		IN AAAA 2a02:cb43:8000::1104
-
-; sinnerg.nl VMs
-svn2			IN A 91.199.167.250
 
 ; OS Groups
 windows		IN A 83.137.149.15
