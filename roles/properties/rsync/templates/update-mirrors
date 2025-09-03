@@ -5,40 +5,40 @@ GIT_RESET="git reset --quiet --hard origin/master"
 GIT_RESET_MAIN="git reset --quiet --hard origin/main"
 
 # Update in its own dedicate checkout first
-# It'll be moved to /local/mirrors/phpweb in update-phpweb-backend
+# It'll be moved to {{ rsync_mirrors_dir }}/phpweb in update-phpweb-backend
 for i in phpweb; do
-    cd /local/repos/$i
+    cd {{ rsync_repositories_dir }}/$i
     $GIT_FETCH && $GIT_RESET
     git submodule update
 done
 
 # Websites needing the 'shared' module
-for i in docweb php-people-web qaweb php-gcov-web php-master-web php-news-web php-bugs-web php-gtk-web talks; do
-    cd /local/mirrors/$i
+for i in docweb php-people-web qaweb php-master-web php-news-web php-bugs-web php-gtk-web talks; do
+    cd {{ rsync_mirrors_dir }}/$i
     $GIT_FETCH && $GIT_RESET;
     (cd shared && $GIT_FETCH && $GIT_RESET)
 done
 
 # For sites where master has been renamed to main, and need the 'shared' module
 for i in php-main-web; do
-    cd /local/mirrors/$i
+    cd {{ rsync_mirrors_dir }}/$i
     $GIT_FETCH && $GIT_RESET_MAIN;
     (cd shared && $GIT_FETCH && $GIT_RESET)
 done
 
 # For sites where the default branch is 'main', and do not use the 'shared' module
 for i in php-analytics-web php-downloads-web; do
-    cd /local/mirrors/$i
+    cd {{ rsync_mirrors_dir }}/$i
     $GIT_FETCH && $GIT_RESET_MAIN;
 done
 
 # The wikibox is special. doesn't do full module rsync :(
-cd /local/mirrors/php-wiki/dokuwiki
+cd {{ rsync_mirrors_dir }}/php-wiki/dokuwiki
 $GIT_FETCH && $GIT_RESET;
 (cd shared && $GIT_FETCH && $GIT_RESET)
 
 # Other stuffs
-for i in systems doc-editor php-shared talks php-gtk-doc peclweb; do
-    cd /local/mirrors/$i
+for i in php-shared talks php-gtk-doc peclweb; do
+    cd {{ rsync_mirrors_dir }}/$i
     $GIT_FETCH && $GIT_RESET;
 done

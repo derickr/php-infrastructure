@@ -1,5 +1,6 @@
 - hosts:
   - service
+  - rsync
 
   become: true
   become_user: root

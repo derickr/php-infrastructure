@@ -3,20 +3,20 @@
 # Update PhD
 GIT_FETCH="git fetch --quiet origin"
 GIT_RESET="git reset --quiet --hard origin/master"
-cd /local/repos/phpdoc/phd
-$GIT_FETCH && $GIT_RESET >/tmp/log-phd 2>&1
 
+cd {{ rsync_repositories_dir }}/phpdoc/phd
+$GIT_FETCH && $GIT_RESET >/var/log/log-phd 2>&1
 
-BASE_DIR=/local/repos/phpdoc-git
+BASE_DIR={{ rsync_repositories_dir }}/phpdoc-git
 
 assertUpToDateRepo() {
     if [ ! -d $BASE_DIR/$1 ]; then
         git clone https://github.com/php/doc-$2.git $BASE_DIR/$1
     fi
-    git -C $BASE_DIR/$1 fetch origin && git -C $BASE_DIR/$1 reset --hard origin/master > /tmp/log-git-$i 2>&1
+    git -C $BASE_DIR/$1 fetch origin && git -C $BASE_DIR/$1 reset --hard origin/master > /var/log/git-fetch-$i.log 2>&1
 }
 
-langs=`php8.2 -r 'include "/local/mirrors/phpweb/include/languages.inc"; echo implode( " ", array_keys( $ACTIVE_ONLINE_LANGUAGES ) );'`;
+langs=`php8.2 -r 'include "{{ rsync_mirrors_dir }}/phpweb/include/languages.inc"; echo implode( " ", array_keys( $ACTIVE_ONLINE_LANGUAGES ) );'`;
 
 if [ ! -d $BASE_DIR ]; then
     mkdir $BASE_DIR;
@@ -33,8 +33,8 @@ cd $BASE_DIR
 for i in $langs; do
   # Update the translation files
   assertUpToDateRepo $i $i
-  /bin/bash /local/systems/build-docs-lang-rsync $i >>/tmp/log-$i 2>&1;
+  /bin/bash /local/systems/build-docs-lang-rsync $i >/var/log/build-docs-lang-rsync-$i.log 2>&1
 done
 
 # Build manual lookup db
-php8.2 /local/systems/gen-phpweb-sqlite-db.php /local/mirrors/phpweb/backend/manual-lookup.sqlite /local/mirrors/phpweb /manual >/dev/null
+php8.2 /local/systems/gen-phpweb-sqlite-db.php {{ rsync_mirrors_dir }}/phpweb/backend/manual-lookup.sqlite {{ rsync_mirrors_dir }}/phpweb /manual >/var/log/gen-phpweb-sqlite-db.log

@@ -195,6 +195,8 @@ analytics-origin	IN A 167.71.2.31
 jump-ams-1.internal  IN A 24.144.78.237
 jump-sfo-1.internal  IN A 209.38.118.252
 
+rsync0-ams.internal  IN A 104.248.198.138
+
 service0-ams.internal IN A 167.172.35.139
 museum.internal       IN CNAME service0-ams.internal.php.net.
 

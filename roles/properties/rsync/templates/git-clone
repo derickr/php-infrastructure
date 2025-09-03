@@ -1,15 +1,21 @@
 #!/bin/bash
-cd /local/repos
+cd "{{ rsync_repositories_dir }}"
 git clone https://github.com/php/web-php.git phpweb
 
-cd /local/mirrors
-git clone https://github.com/php/web-doc-editor.git doc-editor
+cd "{{ rsync_repositories_dir }}/phpweb"
+git config --local --add submodule.distributions.active true
+git config --local --add submodule.distributions.url https://github.com/php/web-php-distributions.git
+git submodule update --init --progress
+
+cd "{{ rsync_repositories_dir }}"
+git clone https://github.com/php/phd.git phpdoc/phd
+
+cd "{{ rsync_mirrors_dir }}"
 git clone https://github.com/php/web-doc.git docweb
 git clone https://github.com/php/web-pecl.git peclweb
 git clone https://github.com/php/web-analytics.git php-analytics-web
 git clone https://github.com/php/web-bugs.git php-bugs-web
 git clone https://github.com/php/web-downloads.git php-downloads-web
-git clone https://github.com/php/web-gcov.git php-gcov-web
 git clone https://github.com/php/doc-gtk.git php-gtk-doc
 git clone https://github.com/php/web-gtk.git php-gtk-web
 git clone https://github.com/php/web-master.git php-main-web
@@ -19,10 +25,9 @@ git clone https://github.com/php/web-people.git php-people-web
 git clone https://github.com/php/web-shared.git php-shared
 git clone https://github.com/php/web-wiki.git php-wiki
 git clone https://github.com/php/web-qa.git qaweb
-git clone https://github.com/php/systems.git systems
 git clone https://github.com/php/web-pres2.git talks
 
-for i in docweb php-people-web qaweb php-gcov-web php-main-web php-master-web php-news-web php-bugs-web php-gtk-web talks; do
-  cd /local/mirrors/$i
+for i in docweb php-people-web qaweb php-main-web php-master-web php-news-web php-bugs-web php-gtk-web talks; do
+  cd "{{ rsync_mirrors_dir }}"/$i
   git clone https://github.com/php/web-shared.git shared
 done

@@ -1,17 +1,32 @@
-- name: Install git
+- name: Install software
   apt:
-    name: git
+    name:
+    - git
+    - php8.2-cli
+    - php8.2-xml
+    - php8.2-sqlite3
     state: present
     update_cache: yes
+
+- name: Link /local/this-box to {{ rsync_box_volume }}
+  file:
+    state: link
+    src: "{{ rsync_box_volume }}"
+    dest: "/local/this-box"
+    mode: "755"
+    owner: "root"
 
 - name: Create local dirs
   file:
     state: directory
-    dest: /local/{{ item }}
+    dest: "{{ item }}"
     mode: "755"
   loop:
-    - mirrors
-    - repos
+    - "{{ rsync_box_dir }}"
+    - "{{ rsync_repositories_dir }}"
+    - "{{ rsync_repositories_dir }}/phpdoc-git"
+    - "{{ rsync_repositories_dir }}/phpdoc"
+    - "{{ rsync_mirrors_dir }}"
 
 - name: Put update scripts to server
   template:
@@ -19,11 +34,13 @@
     dest: /local/systems/
     mode: "755"
   loop:
+    - build-docs-lang-rsync
+    - build-docs-rsync
+    - gen-phpweb-sqlite-db.php
+    - git-clone
     - update-everything
     - update-mirrors
     - update-phpweb-backend
-    - build-docs-rsync
-    - git-clone
 
 - name: Create rsyncd configuration file
   template:
@@ -36,39 +53,26 @@
     state: started
     enabled: yes
 
-# Initially clone all repositories. This task will not run if /local/repos/phpweb/.git exists
+# Initially clone all repositories. This task will not run if "{{ rsync_box_dir }}/repositories/phpweb/.git exists
 - name: Git clone everything
   command: /local/systems/git-clone
   args:
-    creates: /local/repos/phpweb/.git
+    creates: "{{ rsync_box_dir }}/repositories/phpweb/.git"
 
-# At 0, 10, 20, 30, 40, and 50 minutes past the hour, between 12:00 AM and 10:59 PM
+# At 0, 10, 20, 30, 40, and 50 minutes past the hour, between 00:00 and 22:50
 - name: Update everything cron
   cron:
     name: Update everything
     minute: "0,10,20,30,40,50"
     hour: "0-22"
-    job: "/local/systems/update-everything > /dev/null"
+    job: "/local/systems/update-everything >/var/log/update-everything.log"
     user: root
 
 # Every 2 hours
 - name: Build-docs-rsync cron
   cron:
     name: Build docs rsync
-    minute: "0"
+    minute: "7"
     hour: "*/2"
     job: /local/systems/build-docs-rsync
-    user: root
-
-# The script is added by update-mirror
-# Fridays at 09:10 AM
-- name: fetch-chms.php cron
-  cron:
-    name: Fetch CHMs
-    minute: "10"
-    hour: "9"
-    day: "*"
-    month: "*"
-    weekday: "5"
-    job: "php /local/repos/phpdoc-git/doc-base/scripts/fetch-chms.php"
     user: root

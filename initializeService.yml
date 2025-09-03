@@ -16,6 +16,7 @@
 # ansible-playbook initialize.yml --extra-vars "@etc/admins.yml"
 
 - hosts:
+  - rsync
   - service
 
   remote_user: root
