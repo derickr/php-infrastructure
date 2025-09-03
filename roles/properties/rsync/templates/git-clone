@@ -31,3 +31,6 @@ for i in docweb php-people-web qaweb php-main-web php-master-web php-news-web ph
   cd "{{ rsync_mirrors_dir }}"/$i
   git clone https://github.com/php/web-shared.git shared
 done
+
+cd "{{ rsync_mirrors_dir }}"/php-wiki/dokuwiki
+git clone https://github.com/php/web-shared.git shared
