@@ -123,27 +123,6 @@
     state: started
     enabled: yes
 
-# Firewall settings
-- name: Block port 80 access
-  ufw:
-    rule: deny
-    proto: tcp
-    port: 80
-
-- name: Allow access to port 443 only from Myra hosts
-  ufw:
-    rule: allow
-    port: 443
-    proto: tcp
-    src: "{{ item }}"
-  loop: "{{ myra_hosts }}"
-
-- name: Block port 443 access for elsewhere
-  ufw:
-    rule: deny
-    port: 443
-    proto: tcp
-
 # make sure there is a directory for the museum data
 - include_tasks: deploy.yml
 
