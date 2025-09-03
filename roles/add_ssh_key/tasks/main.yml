@@ -8,9 +8,9 @@
   when: username is undefined
 
 - name: Check if users ssh_key exists in repo
-  local_action:
-    module: stat
+  stat:
     path: "{{ role_path }}/templates/ssh_keys/{{ username }}"
+  delegate_to: localhost
   register: ssh_key
   vars:
     ansible_become: false
