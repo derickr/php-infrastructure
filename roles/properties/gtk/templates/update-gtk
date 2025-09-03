@@ -1,2 +1,2 @@
 #!/bin/sh
-rsync -azC --timeout=600 --delete --exclude=configuration.inc --exclude=logs --exclude=.git rsync.php.net::php-gtk-web {{ gtk_docroot }}
+rsync -azC --timeout=600 --delete --exclude=configuration.inc --exclude=logs --exclude=.git {{ rsync_address }}::php-gtk-web {{ gtk_docroot }}
