@@ -12,6 +12,10 @@ easy_dns_hosts: [ "64.68.200.91" ]
 # Private network address that services should rsync from
 rsync_address: '{{ hostvars["rsync0"].ansible_eth1.ipv4.address }}'
 
+# These services and servers need (POST) access to main.internal.php.net
+access_to_main_hosts:
+- 104.236.36.140 # The 'old' lists.php.net server, so that people can subscribe to MLs
+
 downloads_domain: downloads.php.net
 downloads_domain_alias: downloads.internal.php.net
 

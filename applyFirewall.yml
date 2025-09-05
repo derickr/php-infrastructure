@@ -99,6 +99,14 @@
       src: "{{ item }}"
     loop: "{{ easy_dns_hosts }}"
 
+  - name: Allow access TCP port 443 from servers that need to post to main
+    ufw:
+      rule: allow
+      port: 443
+      proto: tcp
+      src: "{{ item }}"
+    loop: "{{ access_to_main_hosts }}"
+
 # Import GitHub APIs for hooks, so that we open up webhooks to main.internal.php.net
 - hosts:
   - pecl
