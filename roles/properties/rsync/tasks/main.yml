@@ -47,6 +47,11 @@
     dest: /etc/rsyncd.conf
     src: templates/rsynd.conf
 
+- name: Place logrotate configuration file for rsyncd
+  template:
+    dest: /etc/logrotate.d/rsyncd
+    src: templates/logrotate-rsyncd
+
 - name: Start and enable rsync deamon
   service:
     name: rsync

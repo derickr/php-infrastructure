@@ -1,0 +1,9 @@
+/var/log/rsyncd.log {
+        weekly
+        missingok
+        rotate 12
+        compress
+        delaycompress
+        notifempty
+        create 0644 root root
+}
