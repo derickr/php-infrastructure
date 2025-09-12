@@ -38,7 +38,7 @@ $GIT_FETCH && $GIT_RESET;
 (cd shared && $GIT_FETCH && $GIT_RESET)
 
 # Other stuffs
-for i in php-shared talks php-gtk-doc peclweb; do
+for i in php-shared talks php-gtk-doc peclweb php-sdk-binary-tools; do
     cd {{ rsync_mirrors_dir }}/$i
     $GIT_FETCH && $GIT_RESET;
 done
