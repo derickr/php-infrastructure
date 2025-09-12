@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Update PHP SDK Binary Tools
+rsync -azC --timeout=600 --delete --delete-after {{ rsync_address }}::php-sdk-binary-tools {{ php_sdk_dir }}
+
+# Updates a json map of zip files with .lib files in them for all windows library builds
+php {{ php_sdk_dir }}/bin/phpsdk_libmap.php {{ windows_public_dir }}/pecl/deps {{ windows_public_dir }}/php-sdk/deps/vc14/x64 {{ windows_public_dir }}/php-sdk/deps/vc14/x86 {{ windows_public_dir }}/php-sdk/deps/vc15/x64 {{ windows_public_dir }}/php-sdk/deps/vc15/x86 {{ windows_public_dir }}/php-sdk/deps/vs16/x64 {{ windows_public_dir }}/php-sdk/deps/vs16/x86 {{ windows_public_dir }}/php-sdk/deps/vs17/x64 {{ windows_public_dir }}/php-sdk/deps/vs17/x86 > {{ windows_public_dir }}/pecl/deps/libmapping.json
+
+# Updates a json map of zip files with .dll files in them for all windows library builds
+php {{ php_sdk_dir }}/bin/phpsdk_dllmap.php {{ windows_public_dir }}/pecl/deps > {{ windows_public_dir }}/pecl/deps/dllmapping.json

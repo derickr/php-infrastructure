@@ -1,0 +1,5 @@
+#!/bin/bash
+
+php {{ downloads_docroot }}/{{ downloads_domain }}/runner.php pecl:add {{ windows_builds_options }} 
+php {{ downloads_docroot }}/{{ downloads_domain }}/runner.php php:add {{ windows_builds_options }}
+php {{ downloads_docroot }}/{{ downloads_domain }}/runner.php winlibs:add {{ windows_builds_options }}

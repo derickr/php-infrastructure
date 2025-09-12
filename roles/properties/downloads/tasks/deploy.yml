@@ -4,11 +4,42 @@
     dest: "{{ downloads_docroot }}/{{ downloads_domain }}"
     mode: "755"
 
-- name: Copy update-downloads script to the server
-  template:
-    src: templates/update-downloads
-    dest: /local/systems/update-downloads
+- name: Ensure Windows build temp directories exist
+  file:
+    state: directory
+    dest: "{{ windows_builds_tmp_dir }}/{{ item }}"
+    mode: "770"
+    owner: www-data
+    group: windows
+  loop:
+    - pecl
+    - php
+    - winlibs
+
+- name: Ensure PHP SDK Binary tools direcotry exist and is owned by 'windows'
+  file:
+    state: directory
+    dest: "{{ php_sdk_dir }}"
     mode: "700"
+    owner: windows
+
+- name: Copy scripts to the server
+  template:
+    src: "templates/{{ item }}"
+    dest: "/local/systems/{{ item }}"
+    mode: "700"
+  loop:
+    - update-downloads
+
+- name: Copy scripts to the server to be run by 'windows' user
+  template:
+    src: "templates/{{ item }}"
+    dest: "/local/systems/{{ item }}"
+    mode: "700"
+    owner: windows
+  loop:
+    - sync-maps
+    - process-builds
 
 - name: Create a cron job to run hourly
   cron:
@@ -16,3 +47,16 @@
     special_time: hourly
     job: /local/systems/update-downloads
 
+- name: Create cron to sync the windows libraries and DLLs
+  cron:
+    name: Run sync-json-files daily
+    special_time: daily
+    job: /local/systems/sync-maps
+    user: windows
+
+- name: Create cron to process the PECL, PHP, and winlibs builds
+  cron:
+    name: Run build processors hourly
+    minute: "5,20,35,50"
+    job: /local/systems/process-builds
+    user: windows

@@ -33,6 +33,14 @@
     state: started
     enabled: yes
 
+# Create the windows user which is used for storing all windows downloads
+- name: Add 'windows' user
+  user:
+    name: "windows"
+    create_home: yes
+    state: present
+    shell: /usr/sbin/nologin
+
 - include_tasks: deploy.yml
 
 # Backup entire downloads home directory as the disk is full of windows downloads and RC downloads,
@@ -53,11 +61,3 @@
     property: downloads
     backup_path: "{{ downloads_home_dir }}"
   when: restore_data is defined and restore_data
-
-# Create the windows user which is used for storing all windows downloads
-- name: Add 'windows' user
-  user:
-    name: "windows"
-    create_home: yes
-    state: present
-    shell: /usr/sbin/nologin
