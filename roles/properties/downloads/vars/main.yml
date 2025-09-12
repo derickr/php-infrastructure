@@ -3,3 +3,5 @@ downloads_config_file: downloads.php.net.conf
 
 downloads_home_dir: /home
 downloads_box: /local/this-box
+
+windows_builds_tmp_dir: /tmp/builds

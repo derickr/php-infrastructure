@@ -15,14 +15,6 @@
     dest: "{{ downloads_box }}"
     mode: "755"
 
-- name: Store secrets file
-  template:
-    src: templates/secrets.conf
-    dest: "{{ downloads_box }}/apache.conf"
-    mode: "600"
-    owner: www-data
-    group: www-data
-
 - name: Add Apache config for downloads.php.net
   template:
     src: templates/downloads.php.net.conf
