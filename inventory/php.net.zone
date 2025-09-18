@@ -85,13 +85,12 @@ people			IN CNAME people-php-net.ax4z.com.
 ; old qa.php.net website, which besides robots.txt now redirects to other locations (only)
 qa			IN CNAME qa-php-net.ax4z.com.
 
-; rsync is used for distributing lots of things
-; not behind Myra because only accessed via rsync
-rsync			IN CNAME sc3.php.net.
-; Geodispersion of rsync; regional rsync nodes (RRNs)
-americas.rsync	IN CNAME rsync.php.net.
-asia.rsync		IN CNAME rsync.php.net.
-europe.rsync		IN CNAME rsync.php.streamservice.nl.
+; rsync is used for distributing consolidated versions of our properties
+; public rsync access is not available directly, but instead through our partner Stream Service:
+rsync                IN CNAME rsync.php.streamservice.nl.
+americas.rsync       IN CNAME rsync.php.net.
+asia.rsync           IN CNAME rsync.php.net.
+europe.rsync         IN CNAME rsync.php.net.
 
 ; shared is important, most php.net sites rely on it for styles, etc.
 shared               IN CNAME shared-php-net.ax4z.com.
