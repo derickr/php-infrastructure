@@ -174,9 +174,6 @@ windows		IN AAAA 2a01:1b0:7999:419::7
 windows		IN	TYPE257	\# 22 000569737375656C657473656E63727970742E6F7267
 windows		IN	TYPE257	\# 12 0009697373756577696C643B
 
-; Server Central/Deft, used for rsync. (contact: systems, or derick)
-sc3			IN A 50.31.206.54
-
 ; eUKhost LTD. (contact Philip)
 euk2			IN A 109.203.109.170
 euk3			IN A 109.203.101.62
