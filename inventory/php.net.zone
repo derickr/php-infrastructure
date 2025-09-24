@@ -27,7 +27,7 @@ $ORIGIN php.net.
 
 ; analytics - Matomo for collecting stats on php.net properties
 ; analytics-origin is name of host, see Digital Ocean section
-analytics		IN CNAME analytics-origin.php.net.
+analytics		IN CNAME analytics-php-net.ax4z.com.
 
 ; bugs database, mostly read-only now
 bugs			IN CNAME bugs-php-net.ax4z.com.
