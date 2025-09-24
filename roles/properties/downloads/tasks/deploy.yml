@@ -14,6 +14,7 @@
   loop:
     - pecl
     - php
+    - series
     - winlibs
 
 - name: Ensure PHP SDK Binary tools direcotry exist and is owned by 'windows'
