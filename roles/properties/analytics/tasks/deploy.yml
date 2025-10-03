@@ -1,0 +1,56 @@
+- name: Create local directory to store analytics content
+  file:
+    state: directory
+    dest: "{{ analytics_docroot }}/{{ analytics_domain }}"
+    mode: "755"
+
+- name: Create local 'parent' directory to store information
+  file:
+    state: directory
+    dest: "{{ item }}"
+    mode: "755"
+    owner: "www-data"
+  loop:
+    - "{{ analytics_box_dir }}"
+
+- name: Create database
+  community.mysql.mysql_db:
+    name: matomo
+    encoding: utf8mb4
+    state: present
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+
+- name: Create database user
+  community.mysql.mysql_user:
+    name: "{{ analytics_username }}"
+    priv: "{{ analytics_database }}.*:ALL"
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+
+- name: Store Matomo's Salt
+  template:
+    src: templates/matomo.env.salt
+    dest: "{{ analytics_box_dir }}/matomo.env.salt"
+
+- name: Copy update-analytics script to the server
+  template:
+    src: templates/update-analytics
+    dest: /local/systems/update-analytics
+    mode: "700"
+
+- name: Create a cron job to hourly update the software hourly
+  cron:
+    name: Run update-analytics hourly
+    special_time: hourly
+    job: /local/systems/update-analytics
+
+- name: Copy the GeoIP Database Updating Script
+  template:
+    src: templates/update-geoip-db
+    dest: /local/systems/update-geoip-db
+    mode: "700"
+
+- name: Create a cron job to run weekly to update the GeoIP Database
+  cron:
+    name: Run update-geoip-db weekly
+    special_time: weekly
+    job: /local/systems/update-geoip-db

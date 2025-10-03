@@ -10,6 +10,7 @@ museum
 wiki
 downloads
 pecl
+analytics
 
 [museum]
 service0 ansible_host=service0-ams.internal.php.net
@@ -22,3 +23,6 @@ service2 ansible_host=service2-ams.internal.php.net
 
 [pecl]
 service3 ansible_host=service3-ams.internal.php.net
+
+[analytics]
+service4 ansible_host=service4-ams.internal.php.net

@@ -1,0 +1,8 @@
+analytics_docroot: /var/www/sites
+analytics_config_file: analytics.php.net.conf
+
+analytics_username: matomo
+analytics_database: matomo
+
+analytics_box_dir: /local/this-box/analytics
+

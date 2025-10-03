@@ -1,0 +1,11 @@
+#!/bin/bash
+
+variant=`date +'%Y-%m'`
+
+wget https://download.db-ip.com/free/dbip-city-lite-${variant}.mmdb.gz -O /tmp/DBIP-City.mmdb.gz >>/var/log/geoip-db-update.log 2>&1
+
+cd /tmp && gunzip -f DBIP-City.mmdb.gz >>/var/log/geoip-db-update.log 2>&1
+
+if [ -f "/tmp/DBIP-City.mmdb" ]; then
+    mv /tmp/DBIP-City.mmdb "{{ analytics_box_dir }}/DBIP-City.mmdb" >>/var/log/geoip-db-update.log 2>&1
+fi

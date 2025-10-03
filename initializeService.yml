@@ -13,7 +13,7 @@
 # comment there)
 
 # Example run:
-# ansible-playbook initialize.yml --extra-vars "@etc/admins.yml"
+# ansible-playbook initializeSerice.yml --limit analytics --extra-vars "@etc/admins.yml"
 
 - hosts:
   - rsync
