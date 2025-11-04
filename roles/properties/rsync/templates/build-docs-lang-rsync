@@ -25,6 +25,9 @@ gzip -9 php-bigxhtml.html -c > php_manual_$1.html.gz
 tar -czf php_manual_$1.tar.gz php-chunked-xhtml
 date
 
+echo "Create mirrors download directory"
+mkdir -p {{ rsync_mirrors_dir }}/phpweb/distributions/manual/
+
 echo "Copying manuals to correct place"
 cp -p php_manual_$1.html.gz {{ rsync_mirrors_dir }}/phpweb/distributions/manual/
 if [ $? -eq 0 ]; then
