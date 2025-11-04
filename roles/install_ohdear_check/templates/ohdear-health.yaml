@@ -1,0 +1,15 @@
+Core:
+  Listen: ":8991"
+  Secret: "{{ ohdear_secret }}"
+
+LoadAverage:
+  Warning: 10
+  Error: 20
+
+MemoryUsagePercent:
+  Warning: 80
+  Error: 90
+
+DiskUsagePercent:
+  Warning: 75
+  Error: 85

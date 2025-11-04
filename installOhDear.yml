@@ -1,0 +1,11 @@
+# Setup the OhDear health check API from https://github.com/derickr/ohdear-system-health
+
+- hosts:
+  - service
+  - rsync
+
+  become: yes
+  become_user: root
+
+  roles:
+    - role: install_ohdear_check

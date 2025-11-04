@@ -1,0 +1,9 @@
+[Unit]
+Description=OhDear Health Check
+After=network.target
+
+[Service]
+Type=exec
+ExecStart=/local/systems/bin/ohdear-system-health
+WorkingDirectory=/local/systems/bin
+Restart=always

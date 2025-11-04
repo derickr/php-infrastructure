@@ -1,0 +1,29 @@
+- name: Make sure systems/bin directory exists
+  file:
+    state: directory
+    dest: /local/systems/bin
+    mode: "755"
+
+- name: Copy OhDear Health Check Config File
+  template:
+    src: templates/ohdear-health.yaml
+    dest: /local/systems/bin/ohdear-health.yaml
+
+- name: Copy OhDear Health Check Binary
+  get_url:
+    url: https://derickrethans.nl/files/dump/ohdear-system-health
+    dest: /local/systems/bin/ohdear-system-health
+    mode: "755"
+
+- name: Copy systemd service file
+  template:
+    src: templates/ohdear-health-check.service
+    dest: /etc/systemd/system/ohdear-health-check.service
+  notify:
+    - reload systemctl
+
+- name: Start OhDear Health Check
+  service:
+    name: ohdear-health-check.service
+    state: started
+    enabled: yes

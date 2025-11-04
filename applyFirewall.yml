@@ -183,6 +183,12 @@
   become_user: root
 
   tasks:
+  - name: Allow health check to port 8991
+    ufw:
+      rule: allow
+      port: 8991
+      proto: tcp
+
   - name: Block port 443 access for elsewhere
     ufw:
       rule: deny
