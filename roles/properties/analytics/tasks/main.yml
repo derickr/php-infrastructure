@@ -22,6 +22,12 @@
     - xml
   notify: reload apache
 
+- name: Add site specific settings
+  template:
+    src: templates/95-local-settings.ini
+    dest: /etc/php/8.2/apache2/conf.d/95-local-settings.ini
+  notify: reload apache
+
 - name: Add Apache config for analytics.php.net
   template:
     src: templates/analytics.php.net.conf

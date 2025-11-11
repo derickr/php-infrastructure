@@ -1,0 +1,10 @@
+/var/log/matomo/*.log {
+        weekly
+        missingok
+        rotate 12
+        compress
+        delaycompress
+        notifempty
+        create 0644 www-data www-data
+}
+

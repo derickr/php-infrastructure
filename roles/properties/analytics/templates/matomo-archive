@@ -1,0 +1,5 @@
+#!/bin/bash
+
+LOGFILE=/var/log/matomo/matomo-archive.log
+
+php /var/www/sites/analytics.php.net/www/console core:archive --url=http://analytics.php.net >> $LOGFILE

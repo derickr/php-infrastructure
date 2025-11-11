@@ -13,6 +13,18 @@
   loop:
     - "{{ analytics_box_dir }}"
 
+- name: Create directory to store matomo logs
+  file:
+    state: directory
+    dest: "/var/log/matomo"
+    mode: "755"
+    owner: "www-data"
+
+- name: Place logrotate configuration file for Matomo logs
+  template:
+    dest: /etc/logrotate.d/matomo
+    src: templates/logrotate-matomo
+
 - name: Create database
   community.mysql.mysql_db:
     name: matomo
@@ -31,11 +43,23 @@
     src: templates/matomo.env.salt
     dest: "{{ analytics_box_dir }}/matomo.env.salt"
 
-- name: Copy update-analytics script to the server
+- name: Copy root scripts to server
   template:
-    src: templates/update-analytics
-    dest: /local/systems/update-analytics
+    src: "templates/{{ item }}"
+    dest: "/local/systems/{{ item }}"
     mode: "700"
+  loop:
+    - "update-analytics"
+    - "update-geoip-db"
+
+- name: Copy www scripts to the server
+  template:
+    src: "templates/{{ item }}"
+    dest: "/local/systems/{{ item }}"
+    mode: "700"
+    owner: "www-data"
+  loop:
+    - "matomo-archive"
 
 - name: Create a cron job to hourly update the software hourly
   cron:
@@ -43,11 +67,12 @@
     special_time: hourly
     job: /local/systems/update-analytics
 
-- name: Copy the GeoIP Database Updating Script
-  template:
-    src: templates/update-geoip-db
-    dest: /local/systems/update-geoip-db
-    mode: "700"
+- name: Create a cron job to archive matomo reports twice an hour
+  cron:
+    name: Run matomo-archive twice an hour
+    minute: "15,45"
+    job: /local/systems/matomo-archive
+    user: "www-data"
 
 - name: Create a cron job to run weekly to update the GeoIP Database
   cron:
