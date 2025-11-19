@@ -51,7 +51,7 @@
 - name: Create cron to sync the windows libraries and DLLs
   cron:
     name: Run sync-json-files daily
-    special_time: daily
+    special_time: hourly
     job: /local/systems/sync-maps
     user: windows
 
