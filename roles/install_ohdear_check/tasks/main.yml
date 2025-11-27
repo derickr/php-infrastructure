@@ -25,5 +25,5 @@
 - name: Start OhDear Health Check
   service:
     name: ohdear-health-check.service
-    state: started
+    state: restarted
     enabled: yes
