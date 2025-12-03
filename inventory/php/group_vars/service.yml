@@ -55,6 +55,9 @@ doc_domain_alias: doc.internal.php.net
 analytics_domain: analytics.php.net
 analytics_domain_alias: analytics.internal.php.net
 
+www_domain: www.php.net
+www_domain_alias: www.internal.php.net
+
 systems_email: systems@php.net
 master_email: "{{ systems_email }}"
 

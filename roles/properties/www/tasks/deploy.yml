@@ -1,0 +1,18 @@
+- name: Create local directory to store www content
+  file:
+    state: directory
+    dest: "{{ www_docroot }}/{{ www_domain }}"
+    mode: "755"
+
+- name: Copy update-www script to the server
+  template:
+    src: templates/update-www
+    dest: /local/systems/update-www
+    mode: "700"
+
+- name: Create a cron job to run every 5 minutes
+  cron:
+    name: Run update-www every 5 minutes
+    minute: "*/5"
+    job: /local/systems/update-www
+
