@@ -13,11 +13,16 @@ for i in phpweb; do
 done
 
 # Websites needing the 'shared' module
-for i in docweb php-people-web qaweb php-master-web php-news-web php-bugs-web php-gtk-web talks; do
+for i in docweb php-people-web qaweb php-master-web php-news-web php-bugs-web php-gtk-web; do
     cd {{ rsync_mirrors_dir }}/$i
     $GIT_FETCH && $GIT_RESET;
     (cd shared && $GIT_FETCH && $GIT_RESET)
 done
+
+# Talks needs the 'presentation' module
+cd {{ rsync_mirrors_dir }}/talks
+$GIT_FETCH && $GIT_RESET;
+(cd presentations && $GIT_FETCH && $GIT_RESET)
 
 # For sites where master has been renamed to main, and need the 'shared' module
 for i in php-main-web; do

@@ -28,6 +28,11 @@ git clone https://github.com/php/web-qa.git qaweb
 git clone https://github.com/php/web-pres2.git talks
 git clone https://github.com/php/php-sdk-binary-tools php-sdk-binary-tools
 
+for i in talks; do
+  cd "{{ rsync_mirrors_dir }}"/$i
+  git clone https://github.com/php/presentations.git presentations
+done
+
 for i in docweb php-people-web qaweb php-main-web php-master-web php-news-web php-bugs-web php-gtk-web talks; do
   cd "{{ rsync_mirrors_dir }}"/$i
   git clone https://github.com/php/web-shared.git shared
