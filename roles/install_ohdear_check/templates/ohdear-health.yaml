@@ -11,5 +11,5 @@ MemoryUsagePercent:
   Error: 90
 
 DiskUsagePercent:
-  Warning: 75
-  Error: 85
+  Warning: 80
+  Error: 90
