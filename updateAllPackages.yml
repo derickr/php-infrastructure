@@ -1,6 +1,7 @@
 - hosts:
   - service
   - rsync
+  - jumphost
 
   become: true
   become_user: root
@@ -9,9 +10,23 @@
     - name: Update apt repo and cache on all Debian/Ubuntu boxes
       apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
 
+    - name: Install unattended-upgrades
+      apt:
+        name:
+          - unattended-upgrades
+        state: present
+
     - name: Upgrade all packages on servers
       apt: upgrade=dist force_apt_get=yes
 
+- hosts:
+  - service
+  - rsync
+
+  become: true
+  become_user: root
+
+  tasks:
     - name: Check if a reboot is needed on all servers
       stat: path=/var/run/reboot-required get_checksum=no
       register: reboot_required_file
