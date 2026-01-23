@@ -95,6 +95,9 @@ europe.rsync         IN CNAME rsync.php.net.
 ; shared is important, most php.net sites rely on it for styles, etc.
 shared               IN CNAME shared-php-net.ax4z.com.
 
+; status is a CNAME for our OhDear health monitoring page
+status			IN CNAME status.ssl.ohdear.app.
+
 ; talks is our preferred name now, old aliases should redirect
 talks			IN CNAME talks-php-net.ax4z.com.
 conf			IN CNAME conf-php-net.ax4z.com.
