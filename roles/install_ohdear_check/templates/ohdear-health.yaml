@@ -13,3 +13,7 @@ MemoryUsagePercent:
 DiskUsagePercent:
   Warning: 80
   Error: 90
+
+TCPServices:
+- Description: "SMTP 25"
+  Port: "mailout.php.net:25"
