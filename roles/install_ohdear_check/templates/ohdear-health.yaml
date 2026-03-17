@@ -17,3 +17,4 @@ DiskUsagePercent:
 TCPServices:
 - Description: "SMTP 25"
   Port: "mailout.php.net:25"
+  ErrorThresholdMins: 3
