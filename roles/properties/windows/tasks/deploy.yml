@@ -1,0 +1,11 @@
+- name: Create local directory to store Windows content
+  file:
+    state: directory
+    dest: "{{ windows_docroot }}/{{ windows_domain }}"
+    mode: "755"
+
+- name: Put robots.txt in document root
+  template:
+    src: templates/robots.txt
+    dest: "{{ windows_docroot }}/{{ windows_domain }}/robots.txt"
+    mode: "644"

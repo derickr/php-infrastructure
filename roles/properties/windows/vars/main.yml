@@ -1,0 +1,2 @@
+windows_docroot: /var/www/sites
+windows_config_file: windows.php.net.conf

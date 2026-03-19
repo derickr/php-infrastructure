@@ -37,3 +37,4 @@
     - role: properties/qa
     - role: properties/shared
     - role: properties/talks
+    - role: properties/windows
